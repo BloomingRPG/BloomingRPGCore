@@ -11,10 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class NPCScript implements Listener {
 
@@ -47,6 +44,12 @@ public class NPCScript implements Listener {
     hasflag:フラグ名 持っていた場合の実行するスクリプト名   => フラグが立っていた場合スクリプトを中断して別のスクリプトを起動します
     addflag フラグ名: フラグ名のフラグを立てます
     removeflag フラグ名: フラグ名のフラグを下げます
+    randomexecute 実行スクリプト名1 実行スクリプト名2 ...
+    => ランダムでスクリプトを実行します。
+    execute 実行スクリプト名: スクリプトを実行します
+
+    重要
+    unlockrenda: 連打対策を無効化します。通常は最後まで話を聞くまで再度話しかけられません。
 
     使用例
 
@@ -92,12 +95,22 @@ public class NPCScript implements Listener {
         return config.getStringList(id);
     }
 
+    List<String> waitingNPCTalk = new ArrayList<>();
+
     public void executeScript(String npcname,List<String> list, Player p){
         Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
+            if(waitingNPCTalk.contains(p.getUniqueId().toString()+":"+npcname)){
+                return;
+            }
+            waitingNPCTalk.add(p.getUniqueId().toString()+":"+npcname);
             for(int i = 0;i<list.size();i++){
                 String script = list.get(i);
-                if(p==null){
+                if(!p.isOnline()){
                     break;
+                }
+
+                if(script.equalsIgnoreCase("unlockrenda")){
+                    waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
                 }
 
                 if(script.startsWith("say ")){
@@ -124,10 +137,25 @@ public class NPCScript implements Listener {
                 }else if(script.startsWith("removeflag ")){
                     script = script.replaceFirst("removeflag ","");
                     plugin.flag.removePlayerFlag(p,script);
+                }else if(script.startsWith("execute ")){
+                    script = script.replaceFirst("execute ","");
+                    waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                    executeScript(npcname,getNPCScript(getNPCFile(npcname),script),p);
+                    break;
+                }else if(script.startsWith("randomexecute ")){
+                    script = script.replaceFirst("randomexecute ","");
+                    waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                    String[] scripts = script.split(" ");
+                    Random rnd = new Random();
+                    int s = rnd.nextInt(scripts.length);
+                    waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                    executeScript(npcname,getNPCScript(getNPCFile(npcname),scripts[s]),p);
+                    break;
                 }else if(script.startsWith("hasflag:")){
                     script = script.replaceFirst("hasflag:","");
                     String[] arg = script.split(" ",2);
                     if(plugin.flag.isPlayerHasFlag(p,arg[0])){
+                        waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
                         executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[1]),p);
                         break;
                     }
@@ -152,6 +180,7 @@ public class NPCScript implements Listener {
                     break;
                 }
             }
+            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
         });
     }
 
@@ -184,6 +213,7 @@ public class NPCScript implements Listener {
                             "File: "+flag[0]+".yml 「"+flag[1]+"」");
                     return;
                 }
+                waitingNPCTalk.remove(e.getPlayer().getUniqueId().toString()+":"+flag[0]);
                 executeScript(flag[0],list,e.getPlayer());
             }
         }
