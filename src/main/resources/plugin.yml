@@ -1,6 +1,14 @@
 name: BloomingRPGCore
 version: ${project.version}
 main: jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore
-api-version: 1.13
 authors: [Mr_IK]
 description: Minecraft JE server Blooming RPG Plugin.
+commands:
+  party:
+    description: BloomParty
+    usage: /<command>
+    default: op
+  pt:
+    description: BloomParty
+    usage: /<command>
+    default: op

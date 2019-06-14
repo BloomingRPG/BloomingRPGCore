@@ -1,8 +1,13 @@
 package jp.mkserver.bloom.bloomingrpgcore;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -14,7 +19,7 @@ import java.util.UUID;
 
 public final class BloomingRPGCore extends JavaPlugin {
 
-    String prefix = "§e§l[§c§lB§6§lRPG§e§l]§§r";
+    public String prefix = "§e§l[§c§lB§6§lRPG§e§l]§§r";
 
     MySQLManagerV2 mysql;
     private BadCommand badCommand;
@@ -82,6 +87,53 @@ public final class BloomingRPGCore extends JavaPlugin {
         meta.setOwningPlayer(Bukkit.getPlayer(playeruuid));
         items.setItemMeta(meta);
         return items;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    //  マインクラフトチャットに、ホバーテキストや、クリックコマンドを設定する関数
+    // [例1] sendHoverText(player,"ここをクリック",null,"/say おはまん");
+    // [例2] sendHoverText(player,"カーソルをあわせて","ヘルプメッセージとか",null);
+    // [例3] sendHoverText(player,"カーソルをあわせてクリック","ヘルプメッセージとか","/say おはまん");
+    public void sendHoverText(Player p,String text,String hoverText,String command){
+        //////////////////////////////////////////
+        //      ホバーテキストとイベントを作成する
+        HoverEvent hoverEvent = null;
+        if(hoverText != null){
+            BaseComponent[] hover = new ComponentBuilder(hoverText).create();
+            hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
+        }
+
+        //////////////////////////////////////////
+        //   クリックイベントを作成する
+        ClickEvent clickEvent = null;
+        if(command != null){
+            clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND,command);
+        }
+
+        BaseComponent[] message = new ComponentBuilder(text).event(hoverEvent).event(clickEvent). create();
+        p.spigot().sendMessage(message);
+    }
+
+    //  マインクラフトチャットに、ホバーテキストや、クリックコマンドサジェストを設定する
+    public void sendSuggestCommand(Player p, String text, String hoverText, String command){
+
+        //////////////////////////////////////////
+        //      ホバーテキストとイベントを作成する
+        HoverEvent hoverEvent = null;
+        if(hoverText != null){
+            BaseComponent[] hover = new ComponentBuilder(hoverText).create();
+            hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
+        }
+
+        //////////////////////////////////////////
+        //   クリックイベントを作成する
+        ClickEvent clickEvent = null;
+        if(command != null){
+            clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,command);
+        }
+
+        BaseComponent[] message = new ComponentBuilder(text). event(hoverEvent).event(clickEvent). create();
+        p.spigot().sendMessage(message);
     }
 
 }
