@@ -1,9 +1,13 @@
 package jp.mkserver.bloom.bloomingrpgcore.party;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
+import jp.mkserver.bloom.bloomingrpgcore.japanizer.JapanizeType;
+import jp.mkserver.bloom.bloomingrpgcore.japanizer.Japanizer;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -25,6 +29,7 @@ public class PartyCore {
         pcommand = new PartyCommand(this);
     }
 
+
     public void buildParty(Player p,String partyname){
         if(isPlayerPartyJoin(p)){
             p.sendMessage(plugin.prefix+"§cあなたはすでに他のパーティに参加しています");
@@ -35,6 +40,7 @@ public class PartyCore {
             return;
         }
         Party party = new Party(partyname,p);
+        plugin.getServer().getPluginManager().registerEvents(party,plugin);
         partys.put(partyname,party);
         p.sendMessage(plugin.prefix+"§aパーティ「§e"+partyname+"§a」を作成しました!");
     }
@@ -149,7 +155,7 @@ public class PartyCore {
     public class Party implements Listener {
         private List<UUID> playerlist;
         UUID owner;
-        private String name;
+        String name;
 
         public Party(String name,Player p){
             this.name = name;
@@ -213,16 +219,22 @@ public class PartyCore {
             }
         }
 
+
         @EventHandler
         public void onChat(AsyncPlayerChatEvent e){
             if(playerlist.contains(e.getPlayer().getUniqueId())){
-                if(e.getMessage().startsWith("$")){
-                    e.setMessage(e.getMessage().replaceFirst("$",""));
+                if(e.getMessage().startsWith("%")){
+                    e.setMessage(e.getMessage().replaceFirst("%",""));
                     return;
                 }
                 e.setCancelled(true);
+                String msg = e.getMessage();
+                String msgs = Japanizer.japanize(msg, JapanizeType.GOOGLE_IME);
+                if(!msgs.equalsIgnoreCase("")){
+                    msg = msg +" §6("+msgs+")";
+                }
                 for(UUID uuid:playerlist){
-                    Bukkit.getPlayer(uuid).sendMessage("§e[Party]§f"+e.getPlayer().getName()+"§a: §r"+e.getMessage());
+                    Bukkit.getPlayer(uuid).sendMessage("§e[Party]§f"+e.getPlayer().getName()+"§a: §r"+ ChatColor.translateAlternateColorCodes('&',msg));
                 }
             }
         }

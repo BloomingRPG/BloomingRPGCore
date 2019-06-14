@@ -6,7 +6,7 @@
 
     <groupId>jp.mkserver.bloom</groupId>
     <artifactId>BloomingRPGCore</artifactId>
-    <version>0.1</version>
+    <version>0.1.4</version>
     <packaging>jar</packaging>
 
     <name>BloomingRPGCore</name>
@@ -62,6 +62,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>everything</id>
+            <url>http://repo.citizensnpcs.co/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -70,6 +74,13 @@
             <artifactId>spigot-api</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.citizensnpcs</groupId>
+            <artifactId>citizensapi</artifactId>
+            <version>2.0.25-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

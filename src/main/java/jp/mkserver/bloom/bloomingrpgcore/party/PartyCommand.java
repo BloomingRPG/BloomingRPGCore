@@ -86,6 +86,28 @@ public class PartyCommand implements CommandExecutor {
                 return true;
             }
 
+            if(args[0].equalsIgnoreCase("list")){
+                if(!core.isPlayerPartyJoin(p)){
+                    p.sendMessage(core.plugin.prefix+"§cあなたはパーティに参加していません。");
+                    return true;
+                }
+
+                //リスト
+                PartyCore.Party party = core.getParty(core.getPartyPlayer(p));
+                p.sendMessage(core.plugin.prefix+"§e"+party.name+"§aのメンバーリスト");
+                for(UUID uuid:party.getPlayerlist()){
+                    Player pp = Bukkit.getPlayer(uuid);
+                    if(pp!=null){
+                        if(party.owner==uuid){
+                            p.sendMessage(core.plugin.prefix+"§6☆"+pp.getName());
+                        }else{
+                            p.sendMessage(core.plugin.prefix+"§e"+pp.getName());
+                        }
+                    }
+                }
+                return true;
+            }
+
         }
 
         if(args.length == 2){

@@ -52,6 +52,13 @@ public class MySQLManagerV2 {
                 "last_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
                 "bonus_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);");
 
+        //logger table
+        execute("CREATE TABLE if not exists flagdata" +
+                "(uuid text, " +
+                "player text, " +
+                "flag text, " +
+                "get_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);");
+
     }
 
 
