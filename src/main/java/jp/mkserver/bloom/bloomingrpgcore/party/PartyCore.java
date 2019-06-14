@@ -63,7 +63,7 @@ public class PartyCore {
             p.sendMessage(plugin.prefix+"§cそのパーティは存在しません");
             return;
         }
-        if(pa.getPlayerlist().contains(p.getUniqueId())){
+        if(!pa.getPlayerlist().contains(p.getUniqueId())){
             p.sendMessage(plugin.prefix+"§cそのパーティに参加していません");
             return;
         }
@@ -81,11 +81,7 @@ public class PartyCore {
     }
 
     public Party getParty(String party){
-        if(partys.containsKey(party)){
-            return null;
-        }else{
-            return partys.get(party);
-        }
+        return partys.getOrDefault(party, null);
     }
 
     public String getPartyPlayer(Player p){

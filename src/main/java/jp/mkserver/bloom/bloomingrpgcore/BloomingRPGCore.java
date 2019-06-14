@@ -1,5 +1,6 @@
 package jp.mkserver.bloom.bloomingrpgcore;
 
+import jp.mkserver.bloom.bloomingrpgcore.party.PartyCore;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -19,18 +20,21 @@ import java.util.UUID;
 
 public final class BloomingRPGCore extends JavaPlugin {
 
-    public String prefix = "§e§l[§c§lB§6§lRPG§e§l]§§r";
+    public String prefix = "§e§l[§c§lB§6§lRPG§e§l]§r";
 
     MySQLManagerV2 mysql;
     private BadCommand badCommand;
     private LoginBonus loginBonus;
+    private PartyCore partyCore;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
+        saveDefaultConfig();
         mysql = new MySQLManagerV2(this,"BRPG-Core");
         badCommand = new BadCommand(this);
         loginBonus = new LoginBonus(this);
+        partyCore = new PartyCore(this);
     }
 
     @Override

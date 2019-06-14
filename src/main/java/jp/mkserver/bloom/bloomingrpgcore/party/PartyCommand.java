@@ -83,8 +83,8 @@ public class PartyCommand implements CommandExecutor {
         if(args.length == 2){
 
             if(args[0].equalsIgnoreCase("create")){
-                if(!invite.containsKey(p.getUniqueId())){
-                    p.sendMessage(core.plugin.prefix+"§cあなたにパーティの招待は来ていません。");
+                if(core.isPlayerPartyJoin(p)){
+                    p.sendMessage(core.plugin.prefix+"§cあなたは他のパーティに参加しています");
                     return true;
                 }
 
