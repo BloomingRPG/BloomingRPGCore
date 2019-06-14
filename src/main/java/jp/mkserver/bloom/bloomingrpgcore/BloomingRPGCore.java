@@ -35,6 +35,7 @@ public final class BloomingRPGCore extends JavaPlugin {
 
 
 
+    //簡単作成不可壊アイテム
     public ItemStack createUnbitem(String name, String[] lore, Material item, int dura, boolean pikapika){
         ItemStack items = new ItemStack(item,1,(short)dura);
         ItemMeta meta = items.getItemMeta();
@@ -51,6 +52,7 @@ public final class BloomingRPGCore extends JavaPlugin {
         return items;
     }
 
+    //簡単作成アイテム
     public ItemStack createItem(String name, String[] lore, Material item, int dura, boolean pikapika){
         ItemStack items = new ItemStack(item,1,(short)dura);
         ItemMeta meta = items.getItemMeta();
@@ -64,6 +66,7 @@ public final class BloomingRPGCore extends JavaPlugin {
         return items;
     }
 
+    //簡単作成プレイヤーヘッド
     public ItemStack createSkullitem(String name, String[] lore, UUID playeruuid, boolean pikapika){
         ItemStack items = new ItemStack(Material.SKULL_ITEM,1,(short)3);
         SkullMeta meta = (SkullMeta) items.getItemMeta();
