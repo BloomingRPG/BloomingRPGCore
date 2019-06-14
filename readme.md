@@ -12,5 +12,5 @@ https://github.com/bloomingrpg/BloomingRPGCore/issues/3
 ### Version History
 v0.1.0: 作成。 readme.md作成&編集。  
 v0.1.1: 禁止コマンド・データベースコア・ログインログ保存とログインボーナス追加。  
-v0.1.2: パーティ機能・コマンド追加
+v0.1.2: パーティ機能・コマンド追加  
 v0.1.3: パーティ機能の改善と修正
