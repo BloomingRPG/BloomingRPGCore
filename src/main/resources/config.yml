@@ -4,4 +4,8 @@ mysql:
   user:
   pass:
   db:
+firstloginbonus:
+  - say <player>さんが初参加です❤
+loginbonus:
+  - say <player>さんがログボゲットです❤
 

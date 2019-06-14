@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -27,11 +28,14 @@ public final class BloomingRPGCore extends JavaPlugin {
     private LoginBonus loginBonus;
     private PartyCore partyCore;
 
+    public FileConfiguration config;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
         saveDefaultConfig();
         mysql = new MySQLManagerV2(this,"BRPG-Core");
+        config = getConfig();
         badCommand = new BadCommand(this);
         loginBonus = new LoginBonus(this);
         partyCore = new PartyCore(this);

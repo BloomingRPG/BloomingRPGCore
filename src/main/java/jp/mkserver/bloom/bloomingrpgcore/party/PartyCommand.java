@@ -52,13 +52,21 @@ public class PartyCommand implements CommandExecutor {
 
                 //拒否
                 invite.remove(p.getUniqueId());
-                p.sendMessage(core.plugin.prefix+"§cパーティの正体を拒否しました");
+                p.sendMessage(core.plugin.prefix+"§cパーティの招待を拒否しました");
                 return true;
             }
 
             if(args[0].equalsIgnoreCase("leave")){
                 if(!core.isPlayerPartyJoin(p)){
                     p.sendMessage(core.plugin.prefix+"§cあなたはパーティに参加していません。");
+                    return true;
+                }
+
+                String pn = core.getPartyPlayer(p);
+                PartyCore.Party pa = core.getParty(pn);
+
+                if(pa.owner==p.getUniqueId()){
+                    p.sendMessage(core.plugin.prefix+"§cパーティのオーナーは退出できません");
                     return true;
                 }
 
@@ -115,6 +123,11 @@ public class PartyCommand implements CommandExecutor {
                 Player target = Bukkit.getPlayer(args[1]);
                 if(target==null){
                     p.sendMessage(core.plugin.prefix+"§cそのプレイヤーはオフラインです");
+                    return true;
+                }
+
+                if(target.getName().equalsIgnoreCase(p.getName())){
+                    p.sendMessage(core.plugin.prefix+"§c自分自身を誘うことはできません");
                     return true;
                 }
 

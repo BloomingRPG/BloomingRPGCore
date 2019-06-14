@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
@@ -108,6 +109,43 @@ public class PartyCore {
         p.sendMessage(plugin.prefix+"§cパーティ「§e"+party+"§c」を解散しました。");
     }
 
+    public void playerKickParty(String party,Player p,String name){
+        Party pa = getParty(party);
+        if(pa == null){
+            p.sendMessage(plugin.prefix+"§cパーティは存在しません");
+            return;
+        }
+        if(pa.owner!=p.getUniqueId()){
+            p.sendMessage(plugin.prefix+"§cこのパーティのオーナーではありません");
+            return;
+        }
+
+        //招待
+        Player target = Bukkit.getPlayer(name);
+
+        if(name.equalsIgnoreCase(p.getName())){
+            p.sendMessage(plugin.prefix+"§c自分自身を誘うことはできません");
+            return;
+        }
+
+        if(target==null){
+            p.sendMessage(plugin.prefix+"§cそのプレイヤーはオフラインです");
+            return;
+        }
+
+        if(!pa.getPlayerlist().contains(target.getUniqueId())){
+            p.sendMessage(plugin.prefix+"§cそのプレイヤーはこのパーティに参加していません");
+            return;
+        }
+
+        pa.kickPlayer(target);
+        for(UUID uuid:pa.getPlayerlist()){
+            Bukkit.getPlayer(uuid).sendMessage(plugin.prefix+"§6"+p.getName()+"§eはパーティを追放された");
+        }
+
+        target.sendMessage(plugin.prefix+"§cあなたはパーティを追放されました");
+    }
+
     public class Party implements Listener {
         private List<UUID> playerlist;
         UUID owner;
@@ -161,9 +199,30 @@ public class PartyCore {
         @EventHandler
         public void onExit(PlayerQuitEvent e){
             if(playerlist.contains(e.getPlayer().getUniqueId())){
+                if(owner==e.getPlayer().getUniqueId()){
+                    for(UUID uuid:playerlist){
+                        Bukkit.getPlayer(uuid).sendMessage(plugin.prefix+"§6"+e.getPlayer().getName()+"§eがログアウトしたためパーティは解散された");
+                    }
+                    breakOutParty(name,e.getPlayer());
+                    return;
+                }
                 kickPlayer(e.getPlayer());
                 for(UUID uuid:playerlist){
                     Bukkit.getPlayer(uuid).sendMessage(plugin.prefix+"§6"+e.getPlayer().getName()+"§eはログアウトしたためパーティを抜けた");
+                }
+            }
+        }
+
+        @EventHandler
+        public void onChat(AsyncPlayerChatEvent e){
+            if(playerlist.contains(e.getPlayer().getUniqueId())){
+                if(e.getMessage().startsWith("$")){
+                    e.setMessage(e.getMessage().replaceFirst("$",""));
+                    return;
+                }
+                e.setCancelled(true);
+                for(UUID uuid:playerlist){
+                    Bukkit.getPlayer(uuid).sendMessage("§e[Party]§f"+e.getPlayer().getName()+"§a: §r"+e.getMessage());
                 }
             }
         }

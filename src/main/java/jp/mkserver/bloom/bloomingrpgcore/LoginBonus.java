@@ -1,5 +1,6 @@
 package jp.mkserver.bloom.bloomingrpgcore;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -86,9 +87,9 @@ public class LoginBonus implements Listener {
             return;
         }
         if(isbonus){
-            plugin.mysql.execute("UPDATE login_log SET bonus_date = CURRENT_TIMESTAMP WHERE uuid = '"+p.getUniqueId().toString()+"';");
+            plugin.mysql.execute("UPDATE login_log SET bonus_date = CURRENT_TIMESTAMP last_date = CURRENT_TIMESTAMP WHERE uuid = '"+p.getUniqueId().toString()+"';");
         }else{
-            plugin.mysql.execute("UPDATE login_log WHERE uuid = '"+p.getUniqueId().toString()+"';");
+            plugin.mysql.execute("UPDATE login_log SET last_date = CURRENT_TIMESTAMP WHERE uuid = '"+p.getUniqueId().toString()+"';");
         }
     }
 
@@ -106,6 +107,9 @@ public class LoginBonus implements Listener {
                         Material.APPLE,0,false);
         apple.setAmount(8);
         p.getInventory().addItem(apple);
+        for(String str:plugin.config.getStringList("loginbonus")){
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),str.replace("<player>",p.getName()));
+        }
     }
 
     //初回ログインボーナスで実行されるメソッド
@@ -122,6 +126,9 @@ public class LoginBonus implements Listener {
                         "§eこれを使うぐらいなら木の枝の方がマシだ。"},
                 Material.STONE_SWORD,0,false);
         p.getInventory().addItem(sword);
+        for(String str:plugin.config.getStringList("firstloginbonus")){
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),str.replace("<player>",p.getName()));
+        }
     }
 
 
