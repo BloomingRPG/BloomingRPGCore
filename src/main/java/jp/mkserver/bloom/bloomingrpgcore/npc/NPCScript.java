@@ -33,7 +33,7 @@ public class NPCScript implements Listener {
 
     PlaceHolder(PH)一覧
     <player>: プレイヤー名
-    <select_counter>: セレクトしたカウンターの数字
+    <select_count>: セレクトしたカウンターの数字
 
     スクリプト仕様
     ・上から順に実行されます。
@@ -69,8 +69,6 @@ public class NPCScript implements Listener {
     select count: カウンター名 => PHの<select_count>の数字を指定します。
     unlockrenda: 連打対策を無効化します。通常は最後まで話を聞くまで再度話しかけられません。
 
-    select counter: カウンター名 =>PHのselect_counterの中身をロードします。
-
     使用例
 
     main:
@@ -99,7 +97,8 @@ public class NPCScript implements Listener {
             FileConfiguration data = YamlConfiguration.loadConfiguration(f);
 
             if (f.exists()) {
-                scripts.put(s.replaceFirst(".yml",""),data);
+                String npcid = s.replaceFirst(".yml","").split("_",2)[0];
+                scripts.put(npcid,data);
             }
         }
     }

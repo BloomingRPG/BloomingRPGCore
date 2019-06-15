@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d31715fa-710f-466d-8b5b-c67c94e79342" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/flag/FlagManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/flag/FlagManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -58,8 +54,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="363" column="32" selection-start-line="363" selection-start-column="32" selection-end-line="363" selection-end-column="32" />
+            <state relative-caret-position="278">
+              <caret line="100" column="40" lean-forward="true" selection-start-line="100" selection-start-column="40" selection-end-line="100" selection-end-column="40" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -479,7 +475,21 @@
       <option name="project" value="LOCAL" />
       <updated>1560574238296</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="v0.1.6 NPCscript power up2">
+      <created>1560601029298</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1560601029298</updated>
+    </task>
+    <task id="LOCAL-00020" summary="v0.1.6 NPCscript bug fix">
+      <created>1560601742455</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1560601742455</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TodoView">
@@ -581,7 +591,9 @@
     <MESSAGE value="v0.1.5 NPCscript powerup" />
     <MESSAGE value="v0.1.5 NPCscript fix" />
     <MESSAGE value="v0.1.5 NPCscript fix2" />
-    <option name="LAST_COMMIT_MESSAGE" value="v0.1.5 NPCscript fix2" />
+    <MESSAGE value="v0.1.6 NPCscript power up2" />
+    <MESSAGE value="v0.1.6 NPCscript bug fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="v0.1.6 NPCscript bug fix" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BadCommand.java" />
@@ -673,13 +685,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
-          <caret line="65" column="29" lean-forward="true" selection-start-line="65" selection-start-column="29" selection-end-line="65" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/flag/FlagManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-24">
@@ -702,10 +707,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="469">
+          <caret line="65" column="29" lean-forward="true" selection-start-line="65" selection-start-column="29" selection-end-line="65" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="363" column="32" selection-start-line="363" selection-start-column="32" selection-end-line="363" selection-end-column="32" />
+        <state relative-caret-position="278">
+          <caret line="100" column="40" lean-forward="true" selection-start-line="100" selection-start-column="40" selection-end-line="100" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
