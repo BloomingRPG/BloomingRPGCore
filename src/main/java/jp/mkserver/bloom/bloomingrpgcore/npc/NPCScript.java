@@ -95,14 +95,85 @@ public class NPCScript implements Listener {
         return config.getStringList(id);
     }
 
-    List<String> waitingNPCTalk = new ArrayList<>();
+    HashMap<String,String> waitingNPCTalk = new HashMap<>();
 
     public void executeScript(String npcname,List<String> list, Player p){
         Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
-            if(waitingNPCTalk.contains(p.getUniqueId().toString()+":"+npcname)){
+            if(waitingNPCTalk.containsKey(p.getUniqueId().toString()+":"+npcname)){
+                String script = waitingNPCTalk.get(p.getUniqueId().toString()+":"+npcname);
+                if(!script.equalsIgnoreCase("none")){
+                    if(script.startsWith("say ")){
+                        script = script.replaceFirst("say ","");
+                        p.sendMessage(script.replace("<player>",p.getName()));
+                    }else if(script.startsWith("delay ")) {
+                        script = script.replaceFirst("delay ", "");
+                        int delay = 0;
+                        try {
+                            delay = Integer.parseInt(script);
+                            Thread.sleep(delay * 50);
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: delay is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }else if(script.startsWith("command ")){
+                        script = script.replaceFirst("command ","");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),script.replace("<player>",p.getName()));
+                    }else if(script.startsWith("addflag ")){
+                        script = script.replaceFirst("addflag ","");
+                        plugin.flag.addPlayerFlag(p,script);
+                    }else if(script.startsWith("removeflag ")){
+                        script = script.replaceFirst("removeflag ","");
+                        plugin.flag.removePlayerFlag(p,script);
+                    }else if(script.startsWith("execute ")){
+                        script = script.replaceFirst("execute ","");
+                        waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                        executeScript(npcname,getNPCScript(getNPCFile(npcname),script),p);
+                        return;
+                    }else if(script.startsWith("randomexecute ")){
+                        script = script.replaceFirst("randomexecute ","");
+                        waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                        String[] scripts = script.split(" ");
+                        Random rnd = new Random();
+                        int s = rnd.nextInt(scripts.length);
+                        waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                        executeScript(npcname,getNPCScript(getNPCFile(npcname),scripts[s]),p);
+                        return;
+                    }else if(script.startsWith("hasflag:")){
+                        script = script.replaceFirst("hasflag:","");
+                        String[] arg = script.split(" ",2);
+                        if(plugin.flag.isPlayerHasFlag(p,arg[0])){
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[1]),p);
+                            return;
+                        }
+                    }else if(script.startsWith("select ")){
+                        script = script.replaceFirst("select ","");
+                        String[] args = script.split(" ");
+                        if(selectData.containsKey(p.getUniqueId())){
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),args[0]),p);
+                            return;
+                        }
+                        List<String> uuids = new ArrayList<>();
+                        for(int ii = 1;ii<args.length;ii++){
+                            String data = args[ii];
+                            String[] datas = data.split(":");
+                            data = datas[0];
+                            String privateid = UUID.randomUUID().toString();
+                            plugin.sendHoverText(p,data,null,"@NPCDataChat: "+privateid);
+                            npcFlag.put(privateid,npcname+" "+datas[1]);
+                            uuids.add(privateid);
+                        }
+                        waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,script);
+                        selectData.put(p.getUniqueId(),uuids);
+                        return;
+                    }
+                }
                 return;
             }
-            waitingNPCTalk.add(p.getUniqueId().toString()+":"+npcname);
+            waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,"none");
             for(int i = 0;i<list.size();i++){
                 String script = list.get(i);
                 if(!p.isOnline()){
@@ -163,7 +234,8 @@ public class NPCScript implements Listener {
                     script = script.replaceFirst("select ","");
                     String[] args = script.split(" ");
                     if(selectData.containsKey(p.getUniqueId())){
-                        p.sendMessage(args[0]);
+                        waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                        executeScript(npcname,getNPCScript(getNPCFile(npcname),args[0]),p);
                         break;
                     }
                     List<String> uuids = new ArrayList<>();
@@ -176,6 +248,7 @@ public class NPCScript implements Listener {
                         npcFlag.put(privateid,npcname+" "+datas[1]);
                         uuids.add(privateid);
                     }
+                    waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,list.get(i));
                     selectData.put(p.getUniqueId(),uuids);
                     break;
                 }
