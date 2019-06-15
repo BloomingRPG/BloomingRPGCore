@@ -136,7 +136,7 @@ public class NPCScript implements Listener {
                             npcFlag.put(privateid,npcname+" "+datas[1]);
                             uuids.add(privateid);
                         }
-                        waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,script);
+                        waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,waitingNPCTalk.get(p.getUniqueId().toString()+":"+npcname));
                         selectData.put(p.getUniqueId(),uuids);
                         return;
                     }
@@ -144,9 +144,8 @@ public class NPCScript implements Listener {
                 return;
             }
             waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,"none");
+            int select_count = 0;
             for(int i = 0;i<list.size();i++) {
-
-                int select_count = 0;
 
                 String script = list.get(i);
                 if (!p.isOnline()) {
@@ -221,7 +220,7 @@ public class NPCScript implements Listener {
                         npcFlag.put(privateid,npcname+" "+datas[1]);
                         uuids.add(privateid);
                     }
-                    waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,script);
+                    waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,list.get(i));
                     selectData.put(p.getUniqueId(),uuids);
                     return;
                 }else if(script.startsWith("counter ")){
