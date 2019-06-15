@@ -151,11 +151,6 @@ public class NPCScript implements Listener {
                     }else if(script.startsWith("select ")){
                         script = script.replaceFirst("select ","");
                         String[] args = script.split(" ");
-                        if(selectData.containsKey(p.getUniqueId())){
-                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
-                            executeScript(npcname,getNPCScript(getNPCFile(npcname),args[0]),p);
-                            return;
-                        }
                         List<String> uuids = new ArrayList<>();
                         for(int ii = 1;ii<args.length;ii++){
                             String data = args[ii];
@@ -234,7 +229,6 @@ public class NPCScript implements Listener {
                     script = script.replaceFirst("select ","");
                     String[] args = script.split(" ");
                     if(selectData.containsKey(p.getUniqueId())){
-                        waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
                         executeScript(npcname,getNPCScript(getNPCFile(npcname),args[0]),p);
                         break;
                     }
@@ -250,7 +244,7 @@ public class NPCScript implements Listener {
                     }
                     waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,list.get(i));
                     selectData.put(p.getUniqueId(),uuids);
-                    break;
+                    return;
                 }
             }
             waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
