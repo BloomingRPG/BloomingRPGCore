@@ -209,6 +209,10 @@ public class NPCScript implements Listener {
                 }else if(script.startsWith("select ")){
                     script = script.replaceFirst("select ","");
                     String[] args = script.split(" ");
+                    if(selectData.containsKey(p.getUniqueId())){
+                        executeScript(npcname,getNPCScript(getNPCFile(npcname),args[0]),p);
+                        break;
+                    }
                     List<String> uuids = new ArrayList<>();
                     for(int ii = 1;ii<args.length;ii++){
                         String data = args[ii];
@@ -409,6 +413,9 @@ public class NPCScript implements Listener {
             if(npcFlag.containsKey(e.getMessage())){
                 String flagdata = npcFlag.get(e.getMessage());
                 npcFlag.remove(e.getMessage());
+                if(selectData.get(e.getPlayer().getUniqueId())==null){
+                    return;
+                }
                 for(String str: selectData.get(e.getPlayer().getUniqueId())){
                     npcFlag.remove(str);
                 }

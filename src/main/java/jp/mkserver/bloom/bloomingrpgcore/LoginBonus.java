@@ -87,7 +87,7 @@ public class LoginBonus implements Listener {
             return;
         }
         if(isbonus){
-            plugin.mysql.execute("UPDATE login_log SET bonus_date = CURRENT_TIMESTAMP last_date = CURRENT_TIMESTAMP WHERE uuid = '"+p.getUniqueId().toString()+"';");
+            plugin.mysql.execute("UPDATE login_log SET bonus_date = CURRENT_TIMESTAMP , last_date = CURRENT_TIMESTAMP WHERE uuid = '"+p.getUniqueId().toString()+"';");
         }else{
             plugin.mysql.execute("UPDATE login_log SET last_date = CURRENT_TIMESTAMP WHERE uuid = '"+p.getUniqueId().toString()+"';");
         }
