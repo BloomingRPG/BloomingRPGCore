@@ -45,18 +45,26 @@ public class MySQLManagerV2 {
 
         //テーブル作成はここ
 
-        //logger table
+        //login logger table
         execute("CREATE TABLE if not exists login_log " +
                 "(uuid text, " +
                 "player text, " +
                 "last_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
                 "bonus_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);");
 
-        //logger table
+        //flag data table
         execute("CREATE TABLE if not exists flagdata" +
                 "(uuid text, " +
                 "player text, " +
                 "flag text, " +
+                "get_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);");
+
+        //logger table
+        execute("CREATE TABLE if not exists counter" +
+                "(uuid text, " +
+                "player text, " +
+                "name text,"+
+                "count INT, " +
                 "get_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);");
 
     }

@@ -1,10 +1,13 @@
 package jp.mkserver.bloom.bloomingrpgcore.npc;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,12 +33,15 @@ public class NPCScript implements Listener {
 
     PlaceHolder(PH)一覧
     <player>: プレイヤー名
+    <select_counter>: セレクトしたカウンターの数字
 
     スクリプト仕様
     ・上から順に実行されます。
     ・一部、実行名にできない単語があるようです。(yes,noなど)
 
     スクリプト一覧
+    ※スクリプトから別スクリプトを実行した場合、元スクリプトはその時点で終了します
+
     say ○○: チャットをクリックしたプレイヤーに送信します。PH使用可能。
     delay 数字: 1につき1tick遅延します。
     select セレクト不可時メッセージ 選択肢1:選んだ場合の実行するスクリプト名 選択肢2:選んだ場合の実行するスクリプト名 選択肢3:選んだ場合の実行するスクリプト名 …
@@ -48,8 +54,22 @@ public class NPCScript implements Listener {
     => ランダムでスクリプトを実行します。
     execute 実行スクリプト名: スクリプトを実行します
 
-    重要
+　　☆便利で無駄なカウンターのスクリプト(多い)☆
+    counter add 名前 数字: カウンターが使えます。これはカウンターに数字を追加するスクリプト=デス
+    counter take 名前 数字:  これはカウンターから数字を引くスクリプト=デス
+    counter is 名前 数字 スクリプト名: カウンターの数字が数字ならスクリプト実行
+    counter up 名前 数字 スクリプト名: カウンターの数字が指定した数字より多いならスクリプト実行
+    counter isup 名前 数字 スクリプト名: カウンターの数字が指定した数字と同じか多いならスクリプト実行
+    counter down 名前 数字 スクリプト名: カウンターの数字が指定した数字より少ないならスクリプト実行
+    counter isdown 名前 数字 スクリプト名: カウンターの数字が指定した数字と同じか少ないならスクリプト実行
+    counter div 名前 数字 スクリプト名: カウンターの数字が指定した数字で割り切れるならスクリプト実行
+    counter clear 名前: カウンターを削除
+
+    その他
+    select count: カウンター名 => PHの<select_count>の数字を指定します。
     unlockrenda: 連打対策を無効化します。通常は最後まで話を聞くまで再度話しかけられません。
+
+    select counter: カウンター名 =>PHのselect_counterの中身をロードします。
 
     使用例
 
@@ -97,58 +117,13 @@ public class NPCScript implements Listener {
 
     HashMap<String,String> waitingNPCTalk = new HashMap<>();
 
+
     public void executeScript(String npcname,List<String> list, Player p){
         Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
             if(waitingNPCTalk.containsKey(p.getUniqueId().toString()+":"+npcname)){
                 String script = waitingNPCTalk.get(p.getUniqueId().toString()+":"+npcname);
                 if(!script.equalsIgnoreCase("none")){
-                    if(script.startsWith("say ")){
-                        script = script.replaceFirst("say ","");
-                        p.sendMessage(script.replace("<player>",p.getName()));
-                    }else if(script.startsWith("delay ")) {
-                        script = script.replaceFirst("delay ", "");
-                        int delay = 0;
-                        try {
-                            delay = Integer.parseInt(script);
-                            Thread.sleep(delay * 50);
-                        } catch (NumberFormatException e) {
-                            plugin.getLogger().warning("NPCScript Error! type: delay is not Number.\n" +
-                                    "File: " + npcname + ".yml Line ?「" + script + "」");
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }else if(script.startsWith("command ")){
-                        script = script.replaceFirst("command ","");
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),script.replace("<player>",p.getName()));
-                    }else if(script.startsWith("addflag ")){
-                        script = script.replaceFirst("addflag ","");
-                        plugin.flag.addPlayerFlag(p,script);
-                    }else if(script.startsWith("removeflag ")){
-                        script = script.replaceFirst("removeflag ","");
-                        plugin.flag.removePlayerFlag(p,script);
-                    }else if(script.startsWith("execute ")){
-                        script = script.replaceFirst("execute ","");
-                        waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
-                        executeScript(npcname,getNPCScript(getNPCFile(npcname),script),p);
-                        return;
-                    }else if(script.startsWith("randomexecute ")){
-                        script = script.replaceFirst("randomexecute ","");
-                        waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
-                        String[] scripts = script.split(" ");
-                        Random rnd = new Random();
-                        int s = rnd.nextInt(scripts.length);
-                        waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
-                        executeScript(npcname,getNPCScript(getNPCFile(npcname),scripts[s]),p);
-                        return;
-                    }else if(script.startsWith("hasflag:")){
-                        script = script.replaceFirst("hasflag:","");
-                        String[] arg = script.split(" ",2);
-                        if(plugin.flag.isPlayerHasFlag(p,arg[0])){
-                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
-                            executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[1]),p);
-                            return;
-                        }
-                    }else if(script.startsWith("select ")){
+                    if(script.startsWith("select ")){
                         script = script.replaceFirst("select ","");
                         String[] args = script.split(" ");
                         List<String> uuids = new ArrayList<>();
@@ -169,19 +144,27 @@ public class NPCScript implements Listener {
                 return;
             }
             waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,"none");
-            for(int i = 0;i<list.size();i++){
+            for(int i = 0;i<list.size();i++) {
+
+                int select_count = 0;
+
                 String script = list.get(i);
-                if(!p.isOnline()){
+                if (!p.isOnline()) {
                     break;
                 }
 
-                if(script.equalsIgnoreCase("unlockrenda")){
-                    waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                if (script.equalsIgnoreCase("unlockrenda")) {
+                    waitingNPCTalk.remove(p.getUniqueId().toString() + ":" + npcname);
+                }
+
+                if(script.startsWith("select count: ")){
+                    script = script.replaceFirst("select count: ","");
+                    select_count = plugin.flag.getCount(p,script);
                 }
 
                 if(script.startsWith("say ")){
                     script = script.replaceFirst("say ","");
-                    p.sendMessage(script.replace("<player>",p.getName()));
+                    p.sendMessage(script.replace("<player>",p.getName()).replace("<select_count>",select_count+""));
                 }else if(script.startsWith("delay ")) {
                     script = script.replaceFirst("delay ", "");
                     int delay = 0;
@@ -190,13 +173,13 @@ public class NPCScript implements Listener {
                         Thread.sleep(delay * 50);
                     } catch (NumberFormatException e) {
                         plugin.getLogger().warning("NPCScript Error! type: delay is not Number.\n" +
-                                "File: " + npcname + ".yml Line " + i + 1 + "「" + list.get(i) + "」");
+                                "File: " + npcname + ".yml Line ?「" + script + "」");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }else if(script.startsWith("command ")){
                     script = script.replaceFirst("command ","");
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(),script.replace("<player>",p.getName()));
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(),script.replace("<player>",p.getName()).replace("<select_count>",select_count+""));
                 }else if(script.startsWith("addflag ")){
                     script = script.replaceFirst("addflag ","");
                     plugin.flag.addPlayerFlag(p,script);
@@ -207,7 +190,7 @@ public class NPCScript implements Listener {
                     script = script.replaceFirst("execute ","");
                     waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
                     executeScript(npcname,getNPCScript(getNPCFile(npcname),script),p);
-                    break;
+                    return;
                 }else if(script.startsWith("randomexecute ")){
                     script = script.replaceFirst("randomexecute ","");
                     waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
@@ -216,22 +199,18 @@ public class NPCScript implements Listener {
                     int s = rnd.nextInt(scripts.length);
                     waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
                     executeScript(npcname,getNPCScript(getNPCFile(npcname),scripts[s]),p);
-                    break;
+                    return;
                 }else if(script.startsWith("hasflag:")){
                     script = script.replaceFirst("hasflag:","");
                     String[] arg = script.split(" ",2);
                     if(plugin.flag.isPlayerHasFlag(p,arg[0])){
                         waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
                         executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[1]),p);
-                        break;
+                        return;
                     }
                 }else if(script.startsWith("select ")){
                     script = script.replaceFirst("select ","");
                     String[] args = script.split(" ");
-                    if(selectData.containsKey(p.getUniqueId())){
-                        executeScript(npcname,getNPCScript(getNPCFile(npcname),args[0]),p);
-                        break;
-                    }
                     List<String> uuids = new ArrayList<>();
                     for(int ii = 1;ii<args.length;ii++){
                         String data = args[ii];
@@ -242,9 +221,178 @@ public class NPCScript implements Listener {
                         npcFlag.put(privateid,npcname+" "+datas[1]);
                         uuids.add(privateid);
                     }
-                    waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,list.get(i));
+                    waitingNPCTalk.put(p.getUniqueId().toString()+":"+npcname,script);
                     selectData.put(p.getUniqueId(),uuids);
                     return;
+                }else if(script.startsWith("counter ")){
+                    script = script.replaceFirst("counter ","");
+
+                    if(script.startsWith("add ")){
+                        script = script.replaceFirst("add ","");
+                        String[] args = script.split(" ");
+                        int old = plugin.flag.getCount(p,args[0]);
+                        if(old==-1){
+                            old = 0;
+                        }
+                        int add = 0;
+                        try {
+                            add = Integer.parseInt(args[1]);
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: number is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        }
+                        old += add;
+                        plugin.flag.countUpdate(p,args[0],old);
+                    }
+
+                    if(script.startsWith("take ")){
+                        script = script.replaceFirst("take ","");
+                        String[] args = script.split(" ");
+                        int old = plugin.flag.getCount(p,args[0]);
+                        if(old==-1){
+                            old = 0;
+                        }
+                        int add = 0;
+                        try {
+                            add = Integer.parseInt(args[1]);
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: number is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        }
+                        old -= add;
+                        plugin.flag.countUpdate(p,args[0],old);
+                    }
+
+                    if(script.startsWith("is ")){
+                        script = script.replaceFirst("is ","");
+                        String[] args = script.split(" ");
+                        int old = plugin.flag.getCount(p,args[0]);
+                        if(old==-1){
+                            old = 0;
+                        }
+                        int check = 0;
+                        try {
+                            check = Integer.parseInt(args[1]);
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: number is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        }
+                        if(old == check){
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),args[2]),p);
+                            return;
+                        }
+                    }
+
+                    if(script.startsWith("up ")){
+                        script = script.replaceFirst("up ","");
+                        String[] args = script.split(" ");
+                        int old = plugin.flag.getCount(p,args[0]);
+                        if(old==-1){
+                            old = 0;
+                        }
+                        int check = 0;
+                        try {
+                            check = Integer.parseInt(args[1]);
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: number is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        }
+                        if(old > check){
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),args[2]),p);
+                            return;
+                        }
+                    }
+
+                    if(script.startsWith("isup ")){
+                        script = script.replaceFirst("isup ","");
+                        String[] args = script.split(" ");
+                        int old = plugin.flag.getCount(p,args[0]);
+                        if(old==-1){
+                            old = 0;
+                        }
+                        int check = 0;
+                        try {
+                            check = Integer.parseInt(args[1]);
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: number is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        }
+                        if(old >= check){
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),args[2]),p);
+                            return;
+                        }
+                    }
+
+                    if(script.startsWith("down ")){
+                        script = script.replaceFirst("down ","");
+                        String[] args = script.split(" ");
+                        int old = plugin.flag.getCount(p,args[0]);
+                        if(old==-1){
+                            old = 0;
+                        }
+                        int check = 0;
+                        try {
+                            check = Integer.parseInt(args[1]);
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: number is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        }
+                        if(old < check){
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),args[2]),p);
+                            return;
+                        }
+                    }
+
+                    if(script.startsWith("isdown ")){
+                        script = script.replaceFirst("isdown ","");
+                        String[] args = script.split(" ");
+                        int old = plugin.flag.getCount(p,args[0]);
+                        if(old==-1){
+                            old = 0;
+                        }
+                        int check = 0;
+                        try {
+                            check = Integer.parseInt(args[1]);
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: number is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        }
+                        if(old <= check){
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),args[2]),p);
+                            return;
+                        }
+                    }
+
+                    if(script.startsWith("div ")){
+                        script = script.replaceFirst("div ","");
+                        String[] args = script.split(" ");
+                        int old = plugin.flag.getCount(p,args[0]);
+                        if(old==-1){
+                            old = 0;
+                        }
+                        int check = 0;
+                        try {
+                            check = Integer.parseInt(args[1]);
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: number is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        }
+                        if(old % check == 0){
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),args[2]),p);
+                            return;
+                        }
+                    }
+
+                    if(script.startsWith("clear ")){
+                        script = script.replaceFirst("clear ","");
+                        plugin.flag.countDelete(p,script);
+                    }
                 }
             }
             waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
