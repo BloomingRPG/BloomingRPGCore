@@ -72,7 +72,8 @@ public class MySQLManagerV2 {
                 "(uuid text, " +
                 "player text, " +
                 "job text,"+
-                "level INT);");
+                "level INT," +
+                "exp INT);");
 
     }
 

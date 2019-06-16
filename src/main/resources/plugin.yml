@@ -13,15 +13,19 @@ commands:
     description: BloomParty
     usage: /<command>
     default: op
-  skillpoint:
-    description: BloomSkill
+  stats:
+    description: BloomStats
     usage: /<command>
     default: op
-  sp:
-    description: BloomSkill
+  st:
+    description: BloomStats
     usage: /<command>
     default: op
   spawn:
     description: BloomSpawn
+    usage: /<command>
+    default: op
+  job:
+    description: BloomJob
     usage: /<command>
     default: op

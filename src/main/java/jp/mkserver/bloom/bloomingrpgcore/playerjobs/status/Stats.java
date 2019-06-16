@@ -22,6 +22,10 @@ public class Stats {
         return maxsp;
     }
 
+    public void setMaxsp(int maxsp) {
+        this.maxsp = maxsp;
+    }
+
     public UUID getUuid() {
         return uuid;
     }

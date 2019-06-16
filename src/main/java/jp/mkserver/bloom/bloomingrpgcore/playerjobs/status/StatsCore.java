@@ -1,7 +1,8 @@
 package jp.mkserver.bloom.bloomingrpgcore.playerjobs.status;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
-import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.AbstractJob;
+import jp.mkserver.bloom.bloomingrpgcore.playerjobs.StatsViewer;
+import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.Job;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -22,19 +23,16 @@ public class StatsCore implements Listener, CommandExecutor {
 
     public StatsCore(BloomingRPGCore plugin){
         this.plugin = plugin;
-        plugin.getCommand("skillpoint").setExecutor(this);
-        plugin.getCommand("sp").setExecutor(this);
+        plugin.getCommand("stats").setExecutor(this);
+        plugin.getCommand("st").setExecutor(this);
         plugin.getServer().getPluginManager().registerEvents(this,plugin);
         reloadPlayerStats();
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,()->{
-            for(Stats stats : playerStats.values()){
-                Player p = Bukkit.getPlayer(stats.getUuid());
-                if(p==null){
-                    return;
-                }
-                playerSPheal(p,1);
+            for(Player p :Bukkit.getOnlinePlayers()){
+                Job job = plugin.job.getUserJob(p);
+                StatsViewer.showActionBar(p,"§6Lv."+plugin.job.getUserLevel(p)+" §e"+job.getJob_spName()+"§e: §a"+getPlayerStats(p).getSp()+"§f/§b"+getPlayerStats(p).getMaxsp());
             }
-        },0,100);
+        },0,2);
     }
 
     public void playerSPheal(Player p,int healamount){
@@ -56,44 +54,68 @@ public class StatsCore implements Listener, CommandExecutor {
         return playerStats.get(p.getUniqueId());
     }
 
-    public void reloadPlayerStats(){
+    private void reloadPlayerStats(){
         for(Player p : Bukkit.getOnlinePlayers()){
             if(!playerStats.containsKey(p.getUniqueId())){
                 int maxsp;
-                AbstractJob job = plugin.job.getUserJob(p);
+                Job job = plugin.job.getUserJob(p);
                 if(job==null){
-                    maxsp = 20;
+                    return;
                 }else{
-                    maxsp = job.getJob_skillpoint();
+                    maxsp = job.getJob_skillpoint(plugin.job.getUserLevel(p));
                 }
                 playerStats.put(p.getUniqueId(),new Stats(p.getUniqueId(),maxsp));
+                plugin.job.playerStatsSync(p,job);
             }
         }
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
-        if(!playerStats.containsKey(e.getPlayer().getUniqueId())){
-            int maxsp;
-            AbstractJob job = plugin.job.getUserJob(e.getPlayer());
-            if(job==null){
-                maxsp = 20;
-            }else{
-                maxsp = job.getJob_skillpoint();
-            }
-            playerStats.put(e.getPlayer().getUniqueId(),new Stats(e.getPlayer().getUniqueId(),maxsp));
+        if(!playerStats.containsKey(e.getPlayer().getUniqueId())) {
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+                Job job = plugin.job.getUserJob(e.getPlayer());
+                int maxsp = job.getJob_skillpoint(plugin.job.getUserLevel(e.getPlayer()));
+                playerStats.put(e.getPlayer().getUniqueId(), new Stats(e.getPlayer().getUniqueId(), maxsp));
+                plugin.job.playerStatsSync(e.getPlayer(), job);
+            }, 10);
         }
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(!(sender instanceof Player)){
+            if(args.length == 3){
+                if(args[0].equalsIgnoreCase("giveexp")){
+                    int exp;
+                    try{
+                        exp = Integer.parseInt(args[1]);
+                    }catch (NumberFormatException e){
+                        plugin.getLogger().info("数字じゃないやん");
+                        return true;
+                    }
+                    Player p = Bukkit.getPlayer(args[2]);
+                    if(p==null){
+                        plugin.getLogger().info("オフラインじゃないの～？");
+                        return true;
+                    }
+                    plugin.job.playerAddEXP(p,exp);
+                }
+            }
             return true;
         }
         Player p = (Player) sender;
         if(args.length == 0){
-            AbstractJob job = plugin.job.getUserJob(p);
-            p.sendMessage("§6"+job.getJob_spName()+"§f: §a"+getPlayerStats(p).getSp());
+            int level = plugin.job.getUserLevel(p);
+            Job job = plugin.job.getUserJob(p);
+            p.sendMessage("§6§l"+p.getName()+"§rの「"+job.getJob_ViewName()+"」§e§lLv."+plugin.job.getUserLevel(p)+" §f§lステータス");
+            p.sendMessage("§aHP(最大値)"+"§f: §a"+p.getHealth()+"§e("+p.getHealthScale()+")");
+            p.sendMessage("§e"+job.getJob_spName()+"(最大値)§f: §a"+getPlayerStats(p).getSp()+"§e("+getPlayerStats(p).getMaxsp()+")");
+            p.sendMessage("§c攻撃力§f: §c"+job.getAttack(level));
+            p.sendMessage("§3防御力§f: §3"+job.getDefense(level));
+            p.sendMessage("§a速度§f: §a通常の x"+job.getSpeed(level));
+            p.sendMessage("§e"+job.getJob_spName()+"§e回復速度§f: §a"+job.getSphealsecond(level)+"秒に"+job.getSphealvalue(level)+"回復");
+            p.sendMessage("§dHP§e回復速度§f: §a"+job.getHphealsecond(level)+"秒に"+job.getHphealvalue(level)+"回復");
         }
         return true;
     }

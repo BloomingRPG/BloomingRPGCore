@@ -1,7 +1,7 @@
 package jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill;
 
 import com.shampaggon.crackshot.events.WeaponPrepareShootEvent;
-import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.AbstractJob;
+import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.Job;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.JobsCore;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,13 +65,13 @@ public class SkillData implements Listener {
     public void onSkillUse(WeaponPrepareShootEvent e){
         if(e.getWeaponTitle().equalsIgnoreCase(cs_name)){
 
-            AbstractJob job = core.plugin.job.getUserJob(e.getPlayer());
+            Job job = core.plugin.job.getUserJob(e.getPlayer());
 
             if(!private_sklil.equalsIgnoreCase("none")){
                 if(job==null||!job.getJobname().equalsIgnoreCase(private_sklil)){
                     String needjobname = "None";
                     String spname = "None";
-                    AbstractJob needjob = core.plugin.job.getJob(private_sklil);
+                    Job needjob = core.plugin.job.getJob(private_sklil);
                     if(needjob!=null){
                         needjobname = needjob.getJobname();
                         spname = needjob.getJob_spName();
