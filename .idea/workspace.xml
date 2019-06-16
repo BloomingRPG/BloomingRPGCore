@@ -2,8 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d31715fa-710f-466d-8b5b-c67c94e79342" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/libs/CrackShot.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/AbstractJob.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/JobsCore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/SwordMaster.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillCore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillData.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/Stats.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/StatsCore.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BloomingRPGCore.iml" beforeDir="false" afterPath="$PROJECT_DIR$/BloomingRPGCore.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -21,8 +34,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-959">
-              <caret line="43" column="37" selection-start-line="43" selection-start-column="37" selection-end-line="43" selection-end-column="37" />
+            <state relative-caret-position="510">
+              <caret line="59" column="36" selection-start-line="59" selection-start-column="36" selection-end-line="59" selection-end-column="36" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -33,32 +46,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-731">
+            <state relative-caret-position="-902">
               <caret line="8" column="18" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/readme.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="272">
-                <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+              <first_editor relative-caret-position="289">
+                <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
               </first_editor>
               <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="100" column="40" lean-forward="true" selection-start-line="100" selection-start-column="40" selection-end-line="100" selection-end-column="40" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -66,49 +67,40 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
+            <state relative-caret-position="340">
+              <caret line="20" column="27" selection-start-line="20" selection-start-column="27" selection-end-line="20" selection-end-column="27" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/LoginBonus.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/JobsCore.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="89" column="11" selection-start-line="89" selection-start-column="11" selection-end-line="89" selection-end-column="165" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/flag/FlagManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-24">
-              <caret line="43" column="26" lean-forward="true" selection-start-line="43" selection-start-column="26" selection-end-line="43" selection-end-column="26" />
+            <state relative-caret-position="68">
+              <caret line="67" column="125" lean-forward="true" selection-start-line="67" selection-start-column="125" selection-end-line="67" selection-end-column="125" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#219#220#0" expanded="true" />
-                <element signature="e#254#255#0" expanded="true" />
+                <element signature="e#3173#3174#0" expanded="true" />
+                <element signature="e#3209#3210#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/AbstractJob.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="469">
-              <caret line="65" column="29" lean-forward="true" selection-start-line="65" selection-start-column="29" selection-end-line="65" selection-end-column="29" />
+            <state relative-caret-position="-7">
+              <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/party/PartyCore.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillCore.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="173">
-              <caret line="157" column="8" selection-start-line="157" selection-start-column="8" selection-end-line="157" selection-end-column="8" />
+            <state relative-caret-position="-143">
+              <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -117,13 +109,36 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/party/PartyCommand.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1370">
-              <caret line="94" column="21" selection-start-line="94" selection-start-column="21" selection-end-line="94" selection-end-column="21" />
+            <state relative-caret-position="272">
+              <caret line="93" lean-forward="true" selection-start-line="93" selection-end-line="93" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1683#1684#0" expanded="true" />
+                <element signature="e#1714#1715#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/StatsCore.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="408">
+              <caret line="27" column="28" selection-start-line="27" selection-start-column="28" selection-end-line="27" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/Stats.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="36" column="31" lean-forward="true" selection-start-line="36" selection-start-column="31" selection-end-line="36" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -151,19 +166,27 @@
       <list>
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BadCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLConnectV2.java" />
-        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/LoginBonus.java" />
         <option value="$PROJECT_DIR$/src/main/resources/config.yml" />
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/japanizer/IMEConverter.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/plugin.yml" />
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCchat.java" />
-        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java" />
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/party/PartyCore.java" />
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/party/PartyCommand.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/readme.md" />
-        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java" />
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/flag/FlagManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/LoginBonus.java" />
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/AbstractJob.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/AbstractSkill.java" />
+        <option value="$PROJECT_DIR$/readme.md" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/SwordMaster.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/JobsCore.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/resources/plugin.yml" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/Stats.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillCore.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/StatsCore.java" />
+        <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillData.java" />
       </list>
     </option>
   </component>
@@ -199,7 +222,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -207,6 +229,17 @@
             <path>
               <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
               <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
+              <item name="libs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
+              <item name="libs" type="462c0819:PsiDirectoryNode" />
+              <item name="CrackShot.jar" type="ab9368bb:PsiFileNode" />
             </path>
             <path>
               <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
@@ -275,6 +308,45 @@
               <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
+              <item name="playerjobs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
+              <item name="playerjobs" type="462c0819:PsiDirectoryNode" />
+              <item name="jobs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
+              <item name="playerjobs" type="462c0819:PsiDirectoryNode" />
+              <item name="skill" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
+              <item name="playerjobs" type="462c0819:PsiDirectoryNode" />
+              <item name="status" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -286,15 +358,20 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/libs" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Mr_IK\IdeaProjects\BloomingRPGCore\libs" />
       <recent name="C:\Users\Mr_IK\IdeaProjects\BloomingRPGCore\src\main\java\jp\mkserver\bloom\bloomingrpgcore" />
     </key>
   </component>
@@ -489,7 +566,21 @@
       <option name="project" value="LOCAL" />
       <updated>1560601742455</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="v0.1.6 NPCscript bug fix2">
+      <created>1560603170224</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1560603170224</updated>
+    </task>
+    <task id="LOCAL-00022" summary="v0.1.6 LoginBonus fix">
+      <created>1560624316781</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1560624316781</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TodoView">
@@ -505,7 +596,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2553305" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25746268" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -514,7 +605,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32936078" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32936078" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -593,7 +684,9 @@
     <MESSAGE value="v0.1.5 NPCscript fix2" />
     <MESSAGE value="v0.1.6 NPCscript power up2" />
     <MESSAGE value="v0.1.6 NPCscript bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="v0.1.6 NPCscript bug fix" />
+    <MESSAGE value="v0.1.6 NPCscript bug fix2" />
+    <MESSAGE value="v0.1.6 LoginBonus fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="v0.1.6 LoginBonus fix" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BadCommand.java" />
@@ -626,7 +719,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java" />
     <entry file="file://$PROJECT_DIR$/src/main/resources/config.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -634,10 +726,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/flag/FlagManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
+        <state relative-caret-position="612">
+          <caret line="43" column="26" selection-start-line="43" selection-start-column="26" selection-end-line="43" selection-end-column="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/party/PartyCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1479">
+          <caret line="94" column="21" selection-start-line="94" selection-start-column="21" selection-end-line="94" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -651,48 +756,126 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/party/PartyCommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1370">
-          <caret line="94" column="21" selection-start-line="94" selection-start-column="21" selection-end-line="94" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-959">
-          <caret line="43" column="37" selection-start-line="43" selection-start-column="37" selection-end-line="43" selection-end-column="37" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/LoginBonus.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="89" column="11" selection-start-line="89" selection-start-column="11" selection-end-line="89" selection-end-column="165" />
+        <state relative-caret-position="252">
+          <caret line="89" column="164" selection-start-line="89" selection-start-column="117" selection-end-line="89" selection-end-column="164" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="92" column="14" selection-start-line="90" selection-end-line="102" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="70" column="48" selection-start-line="70" selection-start-column="48" selection-end-line="70" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/SwordMaster.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+          <folding>
+            <element signature="e#150#151#0" expanded="true" />
+            <element signature="e#217#218#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/libs/CrackShot.jar!/plugin.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/JobsCore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="67" column="125" lean-forward="true" selection-start-line="67" selection-start-column="125" selection-end-line="67" selection-end-column="125" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3173#3174#0" expanded="true" />
+            <element signature="e#3209#3210#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/AbstractJob.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/Stats.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="36" column="31" lean-forward="true" selection-start-line="36" selection-start-column="31" selection-end-line="36" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillCore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-143">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/StatsCore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="27" column="28" selection-start-line="27" selection-start-column="28" selection-end-line="27" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="93" lean-forward="true" selection-start-line="93" selection-end-line="93" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1683#1684#0" expanded="true" />
+            <element signature="e#1714#1715#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-731">
+        <state relative-caret-position="-902">
           <caret line="8" column="18" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/flag/FlagManager.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-24">
-          <caret line="43" column="26" lean-forward="true" selection-start-line="43" selection-start-column="26" selection-end-line="43" selection-end-column="26" />
+        <state relative-caret-position="340">
+          <caret line="20" column="27" selection-start-line="20" selection-start-column="27" selection-end-line="20" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="59" column="36" selection-start-line="59" selection-start-column="36" selection-end-line="59" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#219#220#0" expanded="true" />
-            <element signature="e#254#255#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -700,27 +883,10 @@
     <entry file="file://$PROJECT_DIR$/readme.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="272">
-            <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+          <first_editor relative-caret-position="289">
+            <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
           </first_editor>
           <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
-          <caret line="65" column="29" lean-forward="true" selection-start-line="65" selection-start-column="29" selection-end-line="65" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="100" column="40" lean-forward="true" selection-start-line="100" selection-start-column="40" selection-end-line="100" selection-end-column="40" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>

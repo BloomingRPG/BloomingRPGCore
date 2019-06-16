@@ -59,13 +59,20 @@ public class MySQLManagerV2 {
                 "flag text, " +
                 "get_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);");
 
-        //logger table
+        //value counter table
         execute("CREATE TABLE if not exists counter" +
                 "(uuid text, " +
                 "player text, " +
                 "name text,"+
                 "count INT, " +
                 "get_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);");
+
+        //value counter table
+        execute("CREATE TABLE if not exists jobs" +
+                "(uuid text, " +
+                "player text, " +
+                "job text,"+
+                "level INT);");
 
     }
 

@@ -6,7 +6,7 @@
 
     <groupId>jp.mkserver.bloom</groupId>
     <artifactId>BloomingRPGCore</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7</version>
     <packaging>jar</packaging>
 
     <name>BloomingRPGCore</name>
@@ -81,6 +81,13 @@
             <version>2.0.25-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <artifactId>com.shampaggon.crackshot</artifactId>
+            <groupId>Crackshot</groupId>
+            <scope>system</scope>
+            <version>0.98.9</version>
+            <systemPath>${basedir}/libs/CrackShot.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

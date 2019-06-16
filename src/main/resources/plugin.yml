@@ -3,7 +3,7 @@ version: ${project.version}
 main: jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore
 authors: [Mr_IK]
 description: Minecraft JE server Blooming RPG Plugin.
-depend: [Citizens]
+depend: [Citizens,CrackShot]
 commands:
   party:
     description: BloomParty
@@ -11,5 +11,13 @@ commands:
     default: op
   pt:
     description: BloomParty
+    usage: /<command>
+    default: op
+  skillpoint:
+    description: BloomSkill
+    usage: /<command>
+    default: op
+  sp:
+    description: BloomSkill
     usage: /<command>
     default: op

@@ -3,6 +3,10 @@ package jp.mkserver.bloom.bloomingrpgcore;
 import jp.mkserver.bloom.bloomingrpgcore.flag.FlagManager;
 import jp.mkserver.bloom.bloomingrpgcore.npc.NPCScript;
 import jp.mkserver.bloom.bloomingrpgcore.party.PartyCore;
+import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.JobsCore;
+import jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill.SkillCore;
+import jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill.SkillData;
+import jp.mkserver.bloom.bloomingrpgcore.playerjobs.status.StatsCore;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -31,6 +35,10 @@ public final class BloomingRPGCore extends JavaPlugin {
     private PartyCore partyCore;
     private NPCScript npc;
 
+    public JobsCore job;
+    public SkillCore skill;
+    public StatsCore stats;
+
     public FlagManager flag;
 
     public FileConfiguration config;
@@ -46,6 +54,10 @@ public final class BloomingRPGCore extends JavaPlugin {
         loginBonus = new LoginBonus(this);
         partyCore = new PartyCore(this);
         npc = new NPCScript(this);
+
+        job = new JobsCore(this);
+        skill = new SkillCore(this);
+        stats = new StatsCore(this);
     }
 
     @Override
