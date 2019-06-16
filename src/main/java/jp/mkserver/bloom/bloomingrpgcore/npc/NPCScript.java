@@ -266,7 +266,7 @@ public class NPCScript implements Listener, CommandExecutor {
                                     if(mainhand.getType().equals(Material.getMaterial(itemtype))&&mainhand.getDurability()==data){
                                         if(mainhand.getAmount()>=value){
                                             if(mainhand.getAmount() - value==0){
-                                                p.getInventory().setItemInOffHand(null);
+                                                p.getInventory().setItemInMainHand(null);
                                             }else{
                                                 p.getInventory().getItemInMainHand().setAmount(mainhand.getAmount() - value);
                                             }
