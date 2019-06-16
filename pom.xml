@@ -66,6 +66,10 @@
             <id>everything</id>
             <url>http://repo.citizensnpcs.co/</url>
         </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -88,6 +92,12 @@
             <scope>system</scope>
             <version>0.98.9</version>
             <systemPath>${basedir}/libs/CrackShot.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.6</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

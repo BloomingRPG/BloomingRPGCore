@@ -65,6 +65,10 @@ public class NPCScript implements Listener {
     counter div 名前 数字 スクリプト名: カウンターの数字が指定した数字で割り切れるならスクリプト実行
     counter clear 名前: カウンターを削除
 
+    ☆お金関係☆
+    claim 金額 成功時スクリプト 失敗スクリプト: お金を請求します。成功/失敗時に実行するスクリプトと値段。
+    givemoney 金額: お金をあげちゃう❤
+
     その他
     select count: カウンター名 => PHの<select_count>の数字を指定します。
     unlockrenda: 連打対策を無効化します。通常は最後まで話を聞くまで再度話しかけられません。
@@ -205,6 +209,34 @@ public class NPCScript implements Listener {
                         waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
                         executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[1]),p);
                         return;
+                    }
+                }else if(script.startsWith("claim ")){
+                    script = script.replaceFirst("claim ","");
+                    String[] arg = script.split(" ",3);
+                    long value = 0;
+                    try {
+                        value = Long.parseLong(arg[0]);
+                        if(plugin.vault.getBalance(p.getUniqueId())>=value){
+                            plugin.vault.withdraw(p.getUniqueId(),value);
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[1]),p);
+                        }else{
+                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                            executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[2]),p);
+                        }
+                    } catch (NumberFormatException e) {
+                        plugin.getLogger().warning("NPCScript Error! type: value is not Number.\n" +
+                                "File: " + npcname + ".yml Line ?「" + script + "」");
+                    }
+                }else if(script.startsWith("givemoney ")){
+                    script = script.replaceFirst("givemoney ","");
+                    long value = 0;
+                    try {
+                        value = Long.parseLong(script);
+                        plugin.vault.deposit(p.getUniqueId(),value);
+                    } catch (NumberFormatException e) {
+                        plugin.getLogger().warning("NPCScript Error! type: value is not Number.\n" +
+                                "File: " + npcname + ".yml Line ?「" + script + "」");
                     }
                 }else if(script.startsWith("select ")){
                     script = script.replaceFirst("select ","");

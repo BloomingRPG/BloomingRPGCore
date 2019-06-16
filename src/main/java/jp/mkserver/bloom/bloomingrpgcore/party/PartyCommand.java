@@ -123,6 +123,23 @@ public class PartyCommand implements CommandExecutor {
                 return true;
             }
 
+            if(args[0].equalsIgnoreCase("kick")) {
+                if (!core.isPlayerPartyJoin(p)) {
+                    p.sendMessage(core.plugin.prefix + "§cあなたはパーティに参加していません。");
+                    return true;
+                }
+
+                String pn = core.getPartyPlayer(p);
+                PartyCore.Party pa = core.getParty(pn);
+                if (pa.owner != p.getUniqueId()) {
+                    p.sendMessage(core.plugin.prefix + "§cそのパーティのオーナーではありません");
+                    return true;
+                }
+
+                core.playerKickParty(pn,p,args[1]);
+                return true;
+            }
+
             if(args[0].equalsIgnoreCase("invite")){
                 if(!core.isPlayerPartyJoin(p)){
                     p.sendMessage(core.plugin.prefix+"§cあなたはパーティに参加していません。");
@@ -186,6 +203,8 @@ public class PartyCommand implements CommandExecutor {
         p.sendMessage("§e/party invite [プレイヤー名] : パーティにプレイヤーを招待します。(Ownerのみ)");
         p.sendMessage("§e/party accept/deny : パーティに参加/参加を拒否します");
         p.sendMessage("§e/party leave : パーティから離脱します");
+        p.sendMessage("§e/party list : パーティのプレイヤーリストを表示します");
+        p.sendMessage("§e/party kick [プレイヤー名] : パーティからプレイヤーを追放します (Ownerのみ)");
         p.sendMessage("§e/party breakout : パーティを解散します (Ownerのみ)");
         return true;
     }

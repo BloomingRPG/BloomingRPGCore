@@ -42,12 +42,14 @@ public final class BloomingRPGCore extends JavaPlugin {
     public FlagManager flag;
 
     public FileConfiguration config;
+    public VaultAPI vault;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         saveDefaultConfig();
         mysql = new MySQLManagerV2(this,"BRPG-Core");
+        vault = new VaultAPI(this);
         config = getConfig();
         flag = new FlagManager(this);
         badCommand = new BadCommand(this);

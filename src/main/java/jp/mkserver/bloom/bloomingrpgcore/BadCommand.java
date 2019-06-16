@@ -42,6 +42,9 @@ public class BadCommand implements Listener {
     @EventHandler
     public void onCommandExecute(PlayerCommandPreprocessEvent e){
         if(badCommandList.contains(e.getMessage())){
+            if(e.getPlayer().hasPermission("brpg.core.bypass")){
+                return;
+            }
             e.setCancelled(true);
         }
     }
@@ -52,8 +55,14 @@ public class BadCommand implements Listener {
             return; // not a command, or console entered command. ignore.
         }
         CommandSender sender = event.getSender();
-        if (sender.hasPermission("brpg.core.tabbypass")){
+        if (sender.hasPermission("brpg.core.bypass")){
             return; // has bypass. ignore
+        }
+        for(String bad : badCommandList){
+            if(event.getBuffer().startsWith(bad)){
+                event.setCompletions(new ArrayList<>());
+                return;
+            }
         }
         List<String> comple = event.getCompletions();
         comple.removeAll(badCommandList);

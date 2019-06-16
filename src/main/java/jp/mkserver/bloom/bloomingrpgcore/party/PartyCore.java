@@ -130,7 +130,7 @@ public class PartyCore {
         Player target = Bukkit.getPlayer(name);
 
         if(name.equalsIgnoreCase(p.getName())){
-            p.sendMessage(plugin.prefix+"§c自分自身を誘うことはできません");
+            p.sendMessage(plugin.prefix+"§c自分自身をKickすることはできません");
             return;
         }
 
@@ -146,7 +146,7 @@ public class PartyCore {
 
         pa.kickPlayer(target);
         for(UUID uuid:pa.getPlayerlist()){
-            Bukkit.getPlayer(uuid).sendMessage(plugin.prefix+"§6"+p.getName()+"§eはパーティを追放された");
+            Bukkit.getPlayer(uuid).sendMessage(plugin.prefix+"§6"+target.getName()+"§eはパーティを追放された");
         }
 
         target.sendMessage(plugin.prefix+"§cあなたはパーティを追放されました");
