@@ -21,3 +21,7 @@ commands:
     description: BloomSkill
     usage: /<command>
     default: op
+  spawn:
+    description: BloomSpawn
+    usage: /<command>
+    default: op

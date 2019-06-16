@@ -1,26 +1,32 @@
 package jp.mkserver.bloom.bloomingrpgcore.npc;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.*;
 
-public class NPCScript implements Listener {
+public class NPCScript implements Listener, CommandExecutor {
 
     BloomingRPGCore plugin;
 
     HashMap<String,FileConfiguration> scripts = new HashMap<>();
+    HashMap<String,String> waitingNPCTalk = new HashMap<>();
+
+    HashMap<String,String> npcFlag = new HashMap<>();
+    HashMap<UUID,List<String>> selectData = new HashMap<>();
 
     public NPCScript(BloomingRPGCore plugin){
         this.plugin = plugin;
@@ -68,6 +74,10 @@ public class NPCScript implements Listener {
     ☆お金関係☆
     claim 金額 成功時スクリプト 失敗スクリプト: お金を請求します。成功/失敗時に実行するスクリプトと値段。
     givemoney 金額: お金をあげちゃう❤
+
+    ☆アイテムあげちゃう❤☆
+    useitem アイテム名(noneで未指定):マテリアル名:データ:数 成功時スクリプト 失敗時スクリプト
+    => アイテムを使う
 
     その他
     select count: カウンター名 => PHの<select_count>の数字を指定します。
@@ -117,8 +127,6 @@ public class NPCScript implements Listener {
     public List<String> getNPCScript(FileConfiguration config, String id){
         return config.getStringList(id);
     }
-
-    HashMap<String,String> waitingNPCTalk = new HashMap<>();
 
 
     public void executeScript(String npcname,List<String> list, Player p){
@@ -220,9 +228,11 @@ public class NPCScript implements Listener {
                             plugin.vault.withdraw(p.getUniqueId(),value);
                             waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
                             executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[1]),p);
+                            return;
                         }else{
                             waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
                             executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[2]),p);
+                            return;
                         }
                     } catch (NumberFormatException e) {
                         plugin.getLogger().warning("NPCScript Error! type: value is not Number.\n" +
@@ -238,6 +248,43 @@ public class NPCScript implements Listener {
                         plugin.getLogger().warning("NPCScript Error! type: value is not Number.\n" +
                                 "File: " + npcname + ".yml Line ?「" + script + "」");
                     }
+                }else if(script.startsWith("useitem ")){
+                    script = script.replaceFirst("useitem ","");
+                    String[] arg = script.split(" ",3);
+                    String[] item = arg[0].split(":",4);
+                    String itemname = item[0];
+                    String itemtype = item[1];
+                    if(Material.getMaterial(itemtype)!=null){
+                        float data = 0;
+                        int value = 1;
+                        try {
+                            data = Float.parseFloat(item[2]);
+                            value = Integer.parseInt(item[3]);
+                            if(value>=1&&value<=64){
+                                ItemStack mainhand = p.getInventory().getItemInMainHand();
+                                if(itemname.equalsIgnoreCase("none")||(mainhand!=null&&mainhand.getItemMeta()!=null&&mainhand.getItemMeta().getDisplayName()!=null&&mainhand.getItemMeta().getDisplayName().equals(itemname))){
+                                    if(mainhand.getType().equals(Material.getMaterial(itemtype))&&mainhand.getDurability()==data){
+                                        if(mainhand.getAmount()>=value){
+                                            if(mainhand.getAmount() - value==0){
+                                                p.getInventory().setItemInOffHand(null);
+                                            }else{
+                                                p.getInventory().getItemInMainHand().setAmount(mainhand.getAmount() - value);
+                                            }
+                                            waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                                            executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[1]),p);
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (NumberFormatException e) {
+                            plugin.getLogger().warning("NPCScript Error! type: value is not Number.\n" +
+                                    "File: " + npcname + ".yml Line ?「" + script + "」");
+                        }
+                    }
+                    waitingNPCTalk.remove(p.getUniqueId().toString()+":"+npcname);
+                    executeScript(npcname,getNPCScript(getNPCFile(npcname),arg[2]),p);
+                    return;
                 }else if(script.startsWith("select ")){
                     script = script.replaceFirst("select ","");
                     String[] args = script.split(" ");
@@ -433,10 +480,6 @@ public class NPCScript implements Listener {
         });
     }
 
-
-    HashMap<String,String> npcFlag = new HashMap<>();
-    HashMap<UUID,List<String>> selectData = new HashMap<>();
-
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e){
         if(e.getMessage().startsWith("@NPCDataChat: ")){
@@ -480,5 +523,18 @@ public class NPCScript implements Listener {
             return;
         }
         executeScript(event.getNPC().getId()+"",getNPCScript(file,"main"),event.getClicker());
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            return true;
+        }
+        Player p = (Player) sender;
+
+        if(args.length == 1){
+            loadNPCFile();
+        }
+        return true;
     }
 }

@@ -8,4 +8,8 @@ firstloginbonus:
   - say <player>さんが初参加です❤
 loginbonus:
   - say <player>さんがログボゲットです❤
-
+spawnpoint:
+  world: world
+  x: 0
+  y: 0
+  z: 0

@@ -7,6 +7,7 @@ import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.JobsCore;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill.SkillCore;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill.SkillData;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.status.StatsCore;
+import jp.mkserver.bloom.bloomingrpgcore.spawn.Spawn;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -34,6 +35,7 @@ public final class BloomingRPGCore extends JavaPlugin {
     private LoginBonus loginBonus;
     private PartyCore partyCore;
     private NPCScript npc;
+    private Spawn spawn;
 
     public JobsCore job;
     public SkillCore skill;
@@ -56,6 +58,7 @@ public final class BloomingRPGCore extends JavaPlugin {
         loginBonus = new LoginBonus(this);
         partyCore = new PartyCore(this);
         npc = new NPCScript(this);
+        spawn = new Spawn(this);
 
         job = new JobsCore(this);
         skill = new SkillCore(this);
