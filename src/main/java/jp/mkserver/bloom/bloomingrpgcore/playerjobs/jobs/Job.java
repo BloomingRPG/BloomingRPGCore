@@ -17,8 +17,6 @@ public class Job {
     private int hphealsecond;
     private int hphealvalue;
 
-    private String exptable;
-
     private double attacklvup;
     private double defenselvup;
     private double speedlvup;
@@ -34,7 +32,7 @@ public class Job {
 
     public Job(JobsCore core, String jobname, String job_ViewName, int job_maxsp, String job_spName,
                double attack,double defense,double speed,double addhp,int sphealsecond,int sphealvalue,
-               int hphealsecond,int hphealvalue,String exptable,   double attacklvup,double defenselvup,double speedlvup,
+               int hphealsecond,int hphealvalue,   double attacklvup,double defenselvup,double speedlvup,
                double addhplvup,int maxsplvup,int sphealsecondlvup,int sphealvaluelvup,
                int hphealsecondlvup,int hphealvaluelvup){
         this.core = core;
@@ -51,8 +49,6 @@ public class Job {
         this.sphealvalue = sphealvalue;
         this.hphealsecond = hphealsecond;
         this.hphealvalue = hphealvalue;
-
-        this.exptable = exptable;
 
         this.attacklvup = attacklvup;
         this.defenselvup = defenselvup;
@@ -120,9 +116,5 @@ public class Job {
     public int getHphealvalue(int level) {
         level = level-1;
         return hphealvalue + (hphealvaluelvup*(level-1));
-    }
-
-    public String getExptable() {
-        return exptable;
     }
 }

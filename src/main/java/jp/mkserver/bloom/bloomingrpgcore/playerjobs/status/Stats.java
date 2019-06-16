@@ -24,6 +24,9 @@ public class Stats {
 
     public void setMaxsp(int maxsp) {
         this.maxsp = maxsp;
+        if(this.sp > maxsp){
+            this.sp = maxsp;
+        }
     }
 
     public UUID getUuid() {

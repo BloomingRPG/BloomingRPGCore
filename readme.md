@@ -17,4 +17,5 @@ v0.1.5: NPCScript機能追加
 v0.1.6: NPCScript・FlagManager 機能追加  
 v0.1.7: ジョブ・スキル・MP機能追加  
 v0.1.8: spawn機能追加 NPCScriptアイテム機能追加  
-v0.2.0: Job・Statsシステム系の大幅な更新・追加
+v0.2.0: Job・Statsシステム系の大幅な更新・追加  
+v0.2.1: Jobシステムの修正・更新

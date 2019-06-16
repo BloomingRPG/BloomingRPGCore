@@ -3,6 +3,8 @@ package jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs;
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import jp.mkserver.bloom.bloomingrpgcore.MySQLManagerV2;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,6 +36,8 @@ public class JobsCore implements Listener, CommandExecutor {
         int level;
         int exp;
         String jobname;
+        int joblevel;
+        boolean jobisoverflow;
     }
 
     public JobsCore(BloomingRPGCore plugin) {
@@ -45,47 +49,37 @@ public class JobsCore implements Listener, CommandExecutor {
     }
 
 
-    List<Integer> exptable_soujuku = new ArrayList<>();
     List<Integer> exptable_normal = new ArrayList<>();
-    List<Integer> exptable_bansei = new ArrayList<>();
 
     public void loadExpTable(){
         int exp = 100;
         for(int count=1;count<=50;count++){
-            exptable_soujuku.add(exp);
-            exp = exp + 10;
-        }
-
-        exp = 100;
-        for(int count=1;count<=50;count++){
             exptable_normal.add(exp);
             exp = exp + 30;
-        }
-
-        exp = 100;
-        for(int count=1;count<=50;count++){
-            exptable_bansei.add(exp);
-            exp = exp + 50;
         }
     }
 
     public void levelUpcheck(Player p){
         Job job = getUserJob(p);
-        List<Integer> exptable;
-        if(job.getExptable().equalsIgnoreCase("soujuku")){
-            exptable = exptable_soujuku;
-        }else if(job.getExptable().equalsIgnoreCase("normal")) {
-            exptable = exptable_normal;
-        }else{
-            exptable = exptable_bansei;
-        }
+        List<Integer> exptable = exptable_normal;
         int level = getUserLevel(p);
-        int exp = getUserExp(p);
-        int needexp = exptable.get(level);
-        if(exp>=needexp){
-            p.sendMessage(plugin.prefix+"§e§lLevelUP!! §6§l"+level+" => "+(level+1));
-            userDataSave(p,job,level+1,exp-needexp);
-            plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(level+1));
+        int joblevel = getUserJobLevel(job.getJobname(),p);
+        if(level <= 100){
+            int exp = getUserExp(p);
+            int needexp = exptable.get(level-1);
+            if(exp>=needexp){
+                if((isUserJobOverflow(job.getJobname(),p)&&joblevel<=100)||(!isUserJobOverflow(job.getJobname(),p)&&joblevel<=50)){
+                    p.sendMessage(plugin.prefix+"§e§lJobLevelUP!! §6§l"+joblevel+" => "+(joblevel+1));
+                    playerJobDataSave(p,job,joblevel+1,isUserJobOverflow(job.getJobname(),p));
+                    plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(joblevel+1));
+                }
+                p.sendMessage(plugin.prefix+"§e§lLevelUP!! §6§l"+level+" => "+(level+1));
+                for(Player pp : Bukkit.getOnlinePlayers()){
+                    pp.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1.0f,1.5f);
+                }
+                p.getWorld().spawnParticle(Particle.TOTEM, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
+                userDataSave(p,job,level+1,exp-needexp);
+            }
         }
     }
 
@@ -104,8 +98,6 @@ public class JobsCore implements Listener, CommandExecutor {
     sphealval: 1 #スキルポイントの回復量。
     hphealsec: 0 #HPの回復間隔。秒単位。
     hphealval: 0 #HPの回復量。
-
-    exptable: 'soujuku' #EXPTABLEのタイプ。 soujuku・normal・banseiの3つから選ぶ。
 
     #ここから下のやつは1レベルごとにどんどん変動されます。
     attacklvup: 0.0 #レベルアップごとにどれだけ攻撃力が変動するか
@@ -134,7 +126,7 @@ public class JobsCore implements Listener, CommandExecutor {
                 String jobname = s.replaceFirst(".yml","").split("_",2)[0];
                 Job job = new Job(this,jobname,data.getString("viewname"),data.getInt("maxsp"),data.getString("spname"),
                         data.getDouble("attack"),data.getDouble("defense"),data.getDouble("speed"),data.getDouble("addhp"),
-                        data.getInt("sphealsec"),data.getInt("sphealval"),data.getInt("hphealsec"),data.getInt("hphealval"),data.getString("exptable"),
+                        data.getInt("sphealsec"),data.getInt("sphealval"),data.getInt("hphealsec"),data.getInt("hphealval"),
                         data.getDouble("attacklvup"),data.getDouble("defenselvup"),data.getDouble("speedlvup"),data.getDouble("addhplvup"),
                         data.getInt("splvup"),data.getInt("sphealseclvup"),data.getInt("sphealvallvup"),data.getInt("hphealseclvup"),data.getInt("hphealval"));
                 jobs.put(jobname,job);
@@ -151,6 +143,8 @@ public class JobsCore implements Listener, CommandExecutor {
                 stats.exp = exp;
                 stats.jobname = job.getJobname();
                 stats.level = level;
+                stats.jobisoverflow = isUserJobOverflow(stats.jobname,p);
+                stats.joblevel = getUserJobLevel(stats.jobname,p);
                 playerstats.put(p.getUniqueId(),stats);
             }
         }
@@ -160,12 +154,23 @@ public class JobsCore implements Listener, CommandExecutor {
     public void onJoin(PlayerJoinEvent e){
         if(!isUserDataAlive(e.getPlayer())){
             userDataSave(e.getPlayer(),jobs.get("swordmaster"),1,0);
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()->{
+                if(!isUserJobDataAlive(getUserJob(e.getPlayer()).getJobname(),e.getPlayer())){
+                    playerJobDataSave(e.getPlayer(),getUserJob(e.getPlayer()),1,false);
+                }
+            },10);
         }else{
+            if(!isUserJobDataAlive(getUserJob(e.getPlayer()).getJobname(),e.getPlayer())){
+                playerJobDataSave(e.getPlayer(),getUserJob(e.getPlayer()),1,false);
+                return;
+            }
             PlayerStats stats = new PlayerStats();
             stats.uuid = e.getPlayer().getUniqueId();
             stats.exp = getUserExp(e.getPlayer());
             stats.jobname = getUserjobName(e.getPlayer());
             stats.level = getUserLevel(e.getPlayer());
+            stats.jobisoverflow = isUserJobOverflow(stats.jobname,e.getPlayer());
+            stats.joblevel = getUserJobLevel(stats.jobname,e.getPlayer());
             playerstats.put(e.getPlayer().getUniqueId(),stats);
         }
     }
@@ -229,31 +234,163 @@ public class JobsCore implements Listener, CommandExecutor {
 
     public void userDataSave(Player p, Job job, int level, int exp){
         Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
+            int levels = level;
+            if(level>100){
+                levels = 100;
+            }
+            if(level<1){
+                levels = 1;
+            }
+
+            int exps = exp;
+
+            if(level==100){
+                exps = 0;
+            }
             if(!isUserDataAlive(p)){
-                plugin.mysql.execute("INSERT INTO jobs (player,uuid,job,level,exp)  VALUES ('"+p.getName()+"','"+p.getUniqueId().toString()+"','"+job.getJobname()+"',"+level+","+exp+");");
+                plugin.mysql.execute("INSERT INTO jobs (player,uuid,job,level,exp)  VALUES ('"+p.getName()+"','"+p.getUniqueId().toString()+"','"+job.getJobname()+"',"+levels+","+exps+");");
                 PlayerStats stats = new PlayerStats();
                 stats.uuid = p.getUniqueId();
-                stats.exp = exp;
+                stats.exp = exps;
                 stats.jobname = job.getJobname();
-                stats.level = level;
+                stats.level = levels;
+                stats.jobisoverflow = isUserJobOverflow(stats.jobname,p);
+                stats.joblevel = getUserJobLevel(stats.jobname,p);
                 playerstats.put(p.getUniqueId(),stats);
                 levelUpcheck(p);
                 return;
             }
-            plugin.mysql.execute("UPDATE jobs SET job = '"+job.getJobname()+"' , level = "+level+" , exp = "+exp+" WHERE uuid = '"+p.getUniqueId().toString()+"';");
+            plugin.mysql.execute("UPDATE jobs SET job = '"+job.getJobname()+"' , level = "+levels+" , exp = "+exps+" WHERE uuid = '"+p.getUniqueId().toString()+"';");
             PlayerStats stats = new PlayerStats();
             stats.uuid = p.getUniqueId();
-            stats.exp = exp;
+            stats.exp = exps;
             stats.jobname = job.getJobname();
-            stats.level = level;
+            stats.level = levels;
+            stats.jobisoverflow = isUserJobOverflow(stats.jobname,p);
+            stats.joblevel = getUserJobLevel(stats.jobname,p);
             playerstats.put(p.getUniqueId(),stats);
             levelUpcheck(p);
         });
     }
 
+    public void playerJobDataSave(Player p, Job job, int level, boolean overflow){
+        Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
+            int levels = level;
+            if(overflow&&level>100){
+                levels = 100;
+            }
+
+            if(!overflow&&level>50){
+                levels = 50;
+            }
+
+            if(level<1){
+                levels = 1;
+            }
+            if(!isUserJobDataAlive(job.getJobname(),p)){
+                plugin.mysql.execute("INSERT INTO my_jobs (player,uuid,job,level,overflow)  VALUES ('"+p.getName()+"','"+p.getUniqueId().toString()+"','"+job.getJobname()+"',"+levels+","+overflow+");");
+                PlayerStats stats = new PlayerStats();
+                stats.uuid = p.getUniqueId();
+                stats.exp = getUserExp(p);
+                stats.jobname = job.getJobname();
+                stats.joblevel = levels;
+                stats.jobisoverflow = overflow;
+                stats.level = getUserLevel(p);
+                playerstats.put(p.getUniqueId(),stats);
+                levelUpcheck(p);
+                return;
+            }
+            plugin.mysql.execute("UPDATE my_jobs SET level = "+levels+" , overflow = "+overflow+" WHERE uuid = '"+p.getUniqueId().toString()+"' AND job = '"+job.getJobname()+"';");
+            PlayerStats stats = new PlayerStats();
+            stats.uuid = p.getUniqueId();
+            stats.exp = getUserExp(p);
+            stats.jobname = job.getJobname();
+            stats.joblevel = levels;
+            stats.jobisoverflow = overflow;
+            stats.level = getUserLevel(p);
+            playerstats.put(p.getUniqueId(),stats);
+        });
+    }
+
     public void playerAddEXP(Player p,int exp){
         p.sendMessage(plugin.prefix+"§e"+exp+"EXPをゲットした。");
+        for(Player pp : Bukkit.getOnlinePlayers()){
+            pp.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1.0f,1.5f);
+        }
         plugin.job.userDataSave(p,plugin.job.getUserJob(p),plugin.job.getUserLevel(p),plugin.job.getUserExp(p)+exp);
+    }
+
+    public boolean isUserJobDataAlive(String jobname,Player p){
+        MySQLManagerV2.Query query = plugin.mysql.query("SELECT * FROM my_jobs WHERE uuid = '"+p.getUniqueId().toString()+"' AND job = '"+jobname+"';");
+        ResultSet rs = query.getRs();
+        if(rs==null){
+            query.close();
+            return false;
+        }
+        try {
+            if(rs.next()){
+                query.close();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        query.close();
+        return false;
+    }
+
+    public int getUserJobLevel(String jobname,Player p){
+
+        if(playerstats.containsKey(p.getUniqueId())){
+            if(jobname.equalsIgnoreCase(playerstats.get(p.getUniqueId()).jobname)){
+                return playerstats.get(p.getUniqueId()).joblevel;
+            }
+        }
+
+        MySQLManagerV2.Query query = plugin.mysql.query("SELECT * FROM my_jobs WHERE uuid = '"+p.getUniqueId().toString()+"' AND job = '"+jobname+"';");
+        ResultSet rs = query.getRs();
+        if(rs==null){
+            query.close();
+            return -1;
+        }
+        try {
+            if(rs.next()){
+                int i = rs.getInt("level");
+                query.close();
+                return i;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        query.close();
+        return -1;
+    }
+
+    public boolean isUserJobOverflow(String jobname,Player p){
+
+        if(playerstats.containsKey(p.getUniqueId())){
+            if(jobname.equalsIgnoreCase(playerstats.get(p.getUniqueId()).jobname)){
+                return playerstats.get(p.getUniqueId()).jobisoverflow;
+            }
+        }
+
+        MySQLManagerV2.Query query = plugin.mysql.query("SELECT * FROM my_jobs WHERE uuid = '"+p.getUniqueId().toString()+"' AND job = '"+jobname+"';");
+        ResultSet rs = query.getRs();
+        if(rs==null){
+            query.close();
+            return false;
+        }
+        try {
+            if(rs.next()){
+                boolean overflow = rs.getBoolean("overflow");
+                query.close();
+                return overflow;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        query.close();
+        return false;
     }
 
     public boolean isUserDataAlive(Player p){
@@ -378,7 +515,11 @@ public class JobsCore implements Listener, CommandExecutor {
                 p.sendMessage("§e§lジョブリスト");
                 for(String jobid : jobs.keySet()){
                     Job job = jobs.get(jobid);
-                    p.sendMessage("§e"+jobid+"§a: §r"+job.getJob_ViewName());
+                    if(!isUserJobDataAlive(jobid,p)){
+                        p.sendMessage("§e"+jobid+"§a: §r"+job.getJob_ViewName()+" §c使用したことがありません");
+                    }else{
+                        p.sendMessage("§e"+jobid+"§a: §r"+job.getJob_ViewName()+" §eLv."+getUserJobLevel(jobid,p));
+                    }
                 }
                 return true;
             }
@@ -396,9 +537,16 @@ public class JobsCore implements Listener, CommandExecutor {
                     p.sendMessage("§c既にあなたは"+job.getJob_ViewName()+"§cです");
                     return true;
                 }
-                userDataSave(p,job,1,0);
-                plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(1));
-                p.sendMessage("§aあなたは"+job.getJob_ViewName()+"§aに転職しました");
+                int level = getUserLevel(p);
+                int exp = getUserExp(p);
+                if(!isUserJobDataAlive(job.getJobname(),p)){
+                    playerJobDataSave(p,job,1,false);
+                }
+                Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
+                    userDataSave(p,job,level,exp);
+                    plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(getUserJobLevel(job.getJobname(),p)));
+                    p.sendMessage("§aあなたは"+job.getJob_ViewName()+"§aに転職しました");
+                });
                 return true;
             }
         }

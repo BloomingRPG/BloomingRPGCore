@@ -67,13 +67,22 @@ public class MySQLManagerV2 {
                 "count INT, " +
                 "get_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);");
 
-        //value counter table
+        //user data table
         execute("CREATE TABLE if not exists jobs" +
                 "(uuid text, " +
                 "player text, " +
                 "job text,"+
                 "level INT," +
                 "exp INT);");
+
+        //job data table
+        execute("CREATE TABLE if not exists my_jobs" +
+                "(uuid text, " +
+                "player text, " +
+                "job text,"+
+                "level INT," +
+                "overflow boolean);");
+
 
     }
 

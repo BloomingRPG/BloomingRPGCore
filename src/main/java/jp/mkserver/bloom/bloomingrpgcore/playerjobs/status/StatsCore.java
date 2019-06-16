@@ -30,7 +30,7 @@ public class StatsCore implements Listener, CommandExecutor {
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,()->{
             for(Player p :Bukkit.getOnlinePlayers()){
                 Job job = plugin.job.getUserJob(p);
-                StatsViewer.showActionBar(p,"§6Lv."+plugin.job.getUserLevel(p)+" §e"+job.getJob_spName()+"§e: §a"+getPlayerStats(p).getSp()+"§f/§b"+getPlayerStats(p).getMaxsp());
+                StatsViewer.showActionBar(p,"§6"+p.getName()+"§e(Lv."+plugin.job.getUserLevel(p)+") §r"+job.getJob_ViewName()+"§e(Lv."+plugin.job.getUserJobLevel(job.getJobname(),p)+"§e) "+job.getJob_spName()+"§e: §a"+getPlayerStats(p).getSp()+"§f/§b"+getPlayerStats(p).getMaxsp());
             }
         },0,2);
     }
@@ -62,7 +62,7 @@ public class StatsCore implements Listener, CommandExecutor {
                 if(job==null){
                     return;
                 }else{
-                    maxsp = job.getJob_skillpoint(plugin.job.getUserLevel(p));
+                    maxsp = job.getJob_skillpoint(plugin.job.getUserJobLevel(job.getJobname(),p));
                 }
                 playerStats.put(p.getUniqueId(),new Stats(p.getUniqueId(),maxsp));
                 plugin.job.playerStatsSync(p,job);
@@ -75,7 +75,7 @@ public class StatsCore implements Listener, CommandExecutor {
         if(!playerStats.containsKey(e.getPlayer().getUniqueId())) {
             Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
                 Job job = plugin.job.getUserJob(e.getPlayer());
-                int maxsp = job.getJob_skillpoint(plugin.job.getUserLevel(e.getPlayer()));
+                int maxsp = job.getJob_skillpoint(plugin.job.getUserJobLevel(job.getJobname(),e.getPlayer()));
                 playerStats.put(e.getPlayer().getUniqueId(), new Stats(e.getPlayer().getUniqueId(), maxsp));
                 plugin.job.playerStatsSync(e.getPlayer(), job);
             }, 10);
@@ -108,7 +108,7 @@ public class StatsCore implements Listener, CommandExecutor {
         if(args.length == 0){
             int level = plugin.job.getUserLevel(p);
             Job job = plugin.job.getUserJob(p);
-            p.sendMessage("§6§l"+p.getName()+"§rの「"+job.getJob_ViewName()+"」§e§lLv."+plugin.job.getUserLevel(p)+" §f§lステータス");
+            p.sendMessage("§6§l"+p.getName()+"§e(Lv."+plugin.job.getUserLevel(p)+") §fの「"+job.getJob_ViewName()+" §eLv."+plugin.job.getUserJobLevel(job.getJobname(),p)+"§f」 §f§lステータス");
             p.sendMessage("§aHP(最大値)"+"§f: §a"+p.getHealth()+"§e("+p.getHealthScale()+")");
             p.sendMessage("§e"+job.getJob_spName()+"(最大値)§f: §a"+getPlayerStats(p).getSp()+"§e("+getPlayerStats(p).getMaxsp()+")");
             p.sendMessage("§c攻撃力§f: §c"+job.getAttack(level));
