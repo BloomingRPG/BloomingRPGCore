@@ -4,8 +4,8 @@
 中心となるプラグインです。  
 
 ### Todo
-次回の大型アップデート: v0.2.1  
-https://github.com/bloomingrpg/BloomingRPGCore/issues/10
+次回の大型アップデート: v0.2.2  
+https://github.com/bloomingrpg/BloomingRPGCore/issues/11
 
 ### Version History
 v0.1.0: 作成。 readme.md作成&編集。  
@@ -18,4 +18,5 @@ v0.1.6: NPCScript・FlagManager 機能追加
 v0.1.7: ジョブ・スキル・MP機能追加  
 v0.1.8: spawn機能追加 NPCScriptアイテム機能追加  
 v0.2.0: Job・Statsシステム系の大幅な更新・追加  
-v0.2.1: Jobシステムの修正・更新
+v0.2.1: Jobシステムの修正・更新  
+v0.2.2: Jobシステム系列の大規模な修正・更新

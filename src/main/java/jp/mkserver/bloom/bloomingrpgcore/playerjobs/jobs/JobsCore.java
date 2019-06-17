@@ -2,6 +2,8 @@ package jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import jp.mkserver.bloom.bloomingrpgcore.MySQLManagerV2;
+import jp.mkserver.bloom.bloomingrpgcore.playerjobs.StatsViewer;
+import jp.mkserver.bloom.bloomingrpgcore.playerjobs.status.Stats;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -46,10 +48,16 @@ public class JobsCore implements Listener, CommandExecutor {
         plugin.getServer().getPluginManager().registerEvents(this,plugin);
         loadJobs();
         loadExpTable();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,()->{
+            for(Player p :Bukkit.getOnlinePlayers()){
+                Job job = getUserJob(p);
+                StatsViewer.showActionBar(p,"§6"+p.getName()+"§e(Lv."+getUserLevel(p)+") §r"+job.getJob_ViewName()+"§e(Lv."+getUserJobLevel(job.getJobname(),p)+"§e) "+job.getJob_spName()+"§e: §a"+plugin.stats.getPlayerStats(p).getSp()+"§f/§b"+plugin.stats.getPlayerStats(p).getMaxsp());
+            }
+        },0,2);
     }
 
 
-    List<Integer> exptable_normal = new ArrayList<>();
+    public List<Integer> exptable_normal = new ArrayList<>();
 
     public void loadExpTable(){
         int exp = 100;
@@ -71,6 +79,8 @@ public class JobsCore implements Listener, CommandExecutor {
                 if((isUserJobOverflow(job.getJobname(),p)&&joblevel<=100)||(!isUserJobOverflow(job.getJobname(),p)&&joblevel<=50)){
                     p.sendMessage(plugin.prefix+"§e§lJobLevelUP!! §6§l"+joblevel+" => "+(joblevel+1));
                     playerJobDataSave(p,job,joblevel+1,isUserJobOverflow(job.getJobname(),p));
+                    Stats stats = plugin.stats.getPlayerStats(p);
+                    plugin.stats.savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()+5);
                     plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(joblevel+1));
                 }
                 p.sendMessage(plugin.prefix+"§e§lLevelUP!! §6§l"+level+" => "+(level+1));
@@ -109,6 +119,19 @@ public class JobsCore implements Listener, CommandExecutor {
     sphealvallvup: 0 #レベルアップごとにどれだけSP回復量が変動するか。
     hphealseclvup: 0 #レベルアップごとにどれだけHP回復時間が変動するか。
     hphealvallvup: 0 #レベルアップごとにどれだけHP回復量が変動するか。
+
+    levelup: #レベルアップボーナスを個別で。
+      2: #2~100まで対応
+       attack: 1.0 #攻撃力。ここに書いた分だけ追加でダメージが入る
+       defense: 1.0 #防御力。ここに書いた分だけダメージが減る
+       speed: 0.1 #速度。1が通常。10が最大で歩くスピードを変えられる。
+       addhp: 2 #最大HP追加量。1でハート半分。
+       sphealsec: 1 #スキルポイントの回復間隔。秒単位。
+       sphealval: 1 #スキルポイントの回復量。
+       hphealsec: 0 #HPの回復間隔。秒単位。
+       hphealval: 0 #HPの回復量。
+       sp: 5 #どれだけ最大SP量が変動するか。
+
      */
 
     private void loadJobs(){
@@ -124,7 +147,7 @@ public class JobsCore implements Listener, CommandExecutor {
 
             if (f.exists()) {
                 String jobname = s.replaceFirst(".yml","").split("_",2)[0];
-                Job job = new Job(this,jobname,data.getString("viewname"),data.getInt("maxsp"),data.getString("spname"),
+                Job job = new Job(this,data,jobname,data.getString("viewname"),data.getInt("maxsp"),data.getString("spname"),
                         data.getDouble("attack"),data.getDouble("defense"),data.getDouble("speed"),data.getDouble("addhp"),
                         data.getInt("sphealsec"),data.getInt("sphealval"),data.getInt("hphealsec"),data.getInt("hphealval"),
                         data.getDouble("attacklvup"),data.getDouble("defenselvup"),data.getDouble("speedlvup"),data.getDouble("addhplvup"),
@@ -179,9 +202,8 @@ public class JobsCore implements Listener, CommandExecutor {
     public void onDamage(EntityDamageEvent e){
         if (e.getEntity() instanceof Player){
             Player p = (Player) e.getEntity();
-            Job job = getUserJob(p);
             double damage = e.getDamage();
-            double defense = job.getDefense(getUserLevel(p));
+            double defense = plugin.stats.getDEF(p);
             if(damage <= defense){
                 e.setCancelled(true);
             }else{
@@ -194,22 +216,21 @@ public class JobsCore implements Listener, CommandExecutor {
     public void onAttack(EntityDamageByEntityEvent e){
         if (e.getEntity() instanceof Player){
             Player p = (Player) e.getEntity();
-            Job job = getUserJob(p);
             double damage = e.getDamage();
-            double attack = job.getAttack(getUserLevel(p));
+            double attack = plugin.stats.getATK(p);
             e.setDamage(damage+attack);
         }
     }
 
     public void playerStatsSync(Player p,Job job){
-        int level = getUserLevel(p);
+        int level = getUserJobLevel(job.getJobname(),p);
 
         if(job.getAddhp(level)!=0){
             p.setHealthScale(20+job.getAddhp(level));
         }
 
-        if(job.getSpeed(level)!=1.0){
-            p.setWalkSpeed((float)job.getSpeed(level));
+        if(plugin.stats.getSPD(p)!=1.0){
+            p.setWalkSpeed((float)plugin.stats.getSPD(p));
         }
 
         if(job.getSphealsecond(level)!=0&&job.getSphealvalue(level)!=0){

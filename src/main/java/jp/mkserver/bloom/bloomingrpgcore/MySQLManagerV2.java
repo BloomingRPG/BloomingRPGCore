@@ -83,6 +83,17 @@ public class MySQLManagerV2 {
                 "level INT," +
                 "overflow boolean);");
 
+        //player stats table
+        execute("CREATE TABLE if not exists stats" +
+                "(uuid text, " +
+                "player text, " +
+                "attack double,"+
+                "defense double," +
+                "speed double," +
+                "sp double," +
+                "statspoint INT" +
+                ");");
+
 
     }
 

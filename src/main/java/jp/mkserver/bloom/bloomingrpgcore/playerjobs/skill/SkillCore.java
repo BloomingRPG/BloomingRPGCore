@@ -15,6 +15,7 @@ public class SkillCore {
     public SkillCore(BloomingRPGCore plugin) {
         this.plugin = plugin;
         loadFiles();
+        plugin.stats.reloadPlayerStats();
     }
 
     /*

@@ -60,9 +60,9 @@ public final class BloomingRPGCore extends JavaPlugin {
         npc = new NPCScript(this);
         spawn = new Spawn(this);
 
+        stats = new StatsCore(this);
         job = new JobsCore(this);
         skill = new SkillCore(this);
-        stats = new StatsCore(this);
     }
 
     @Override
