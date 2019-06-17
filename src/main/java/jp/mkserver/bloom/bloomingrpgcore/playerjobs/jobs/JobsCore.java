@@ -106,7 +106,7 @@ public class JobsCore implements Listener, CommandExecutor {
         }
 
         if(oldlevel != level){
-            p.sendMessage(plugin.prefix+"§e§lLevelUP!! §6§l"+oldlevel+" => "+(level));
+            p.sendTitle("§e§lLevelUP!!","§6§l"+oldlevel+" => "+(level),5,60,5);
             for(Player pp : Bukkit.getOnlinePlayers()){
                 pp.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1.0f,1.5f);
             }
@@ -224,6 +224,9 @@ public class JobsCore implements Listener, CommandExecutor {
     public void onDamage(EntityDamageEvent e){
         if (e.getEntity() instanceof Player){
             Player p = (Player) e.getEntity();
+            if(p==null||!p.isOnline()){
+                return;
+            }
             double damage = e.getDamage();
             double defense = plugin.stats.getDEF(p);
             if(damage <= defense){
@@ -284,6 +287,9 @@ public class JobsCore implements Listener, CommandExecutor {
     public void onAttack(EntityDamageByEntityEvent e){
         if (e.getEntity() instanceof Player){
             Player p = (Player) e.getEntity();
+            if(p==null||!p.isOnline()){
+                return;
+            }
             double damage = e.getDamage();
             double attack = plugin.stats.getATK(p);
             e.setDamage(damage+attack);
@@ -413,6 +419,7 @@ public class JobsCore implements Listener, CommandExecutor {
 
     public void playerAddEXP(Player p,int exp){
         p.sendMessage(plugin.prefix+"§e"+exp+"EXPをゲットした。");
+        p.sendTitle("","                    §e"+exp+"EXPゲット",0,40,0);
         for(Player pp : Bukkit.getOnlinePlayers()){
             pp.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1.0f,1.5f);
         }
@@ -615,11 +622,16 @@ public class JobsCore implements Listener, CommandExecutor {
                 for(String jobid : jobs.keySet()){
                     Job job = jobs.get(jobid);
                     if(!isUserJobDataAlive(jobid,p)){
-                        p.sendMessage("§e"+jobid+"§a: §r"+job.getJob_ViewName()+" §c使用したことがありません");
+                        p.sendMessage("§e"+jobid+"§a: §r"+job.getJob_ViewName()+" §c未使用");
                     }else{
                         p.sendMessage("§e"+jobid+"§a: §r"+job.getJob_ViewName()+" §eLv."+getUserJobLevel(jobid,p));
                     }
                 }
+                return true;
+            }else if(args[0].equalsIgnoreCase("overflow")){
+                playerJobDataSave(p,getUserJob(p),getUserJobLevel(getUserJob(p).getJobname(),p),true);
+                p.getWorld().spawnParticle(Particle.FALLING_DUST, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
+                Bukkit.broadcastMessage(plugin.prefix+"§6§l§o"+p.getName()+"§5§l§oは"+getUserJob(p).getJobname()+"§5§l§oの力を解放した…！");
                 return true;
             }
         }

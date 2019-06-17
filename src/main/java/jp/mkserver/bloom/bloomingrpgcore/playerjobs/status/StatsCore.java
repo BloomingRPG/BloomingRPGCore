@@ -4,6 +4,7 @@ import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import jp.mkserver.bloom.bloomingrpgcore.MySQLManagerV2;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.Job;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -168,12 +170,18 @@ public class StatsCore implements Listener, CommandExecutor {
         Player p = (Player) sender;
         if(args.length == 0){
             int level = plugin.job.getUserLevel(p);
-            int need_exp = plugin.job.exptable_normal.get(level-1) - plugin.job.getUserExp(p);
+            int need_exp;
+            if(level!=100){
+                need_exp = plugin.job.exptable_normal.get(level-1) - plugin.job.getUserExp(p);
+            }else{
+                need_exp = 0;
+            }
             Job job = plugin.job.getUserJob(p);
             p.sendMessage("§6§l"+p.getName()+"§e(Lv."+plugin.job.getUserLevel(p)+") §fの「"+job.getJob_ViewName()+" §eLv."+plugin.job.getUserJobLevel(job.getJobname(),p)+"§f」 §f§lステータス");
             p.sendMessage("§e次のレベルまで: "+need_exp+"EXP");
             p.sendMessage("§eステータスポイント: §b"+getStatsPoint(p)+"P");
-            p.sendMessage("§aHP(最大値)"+"§f: §a"+p.getHealth()+"§e("+p.getHealthScale()+")");
+            BigDecimal bd = new BigDecimal(p.getHealth());
+            p.sendMessage("§aHP(最大値)"+"§f: §a"+bd.setScale(1, RoundingMode.HALF_UP)+"§e("+p.getHealthScale()+")");
             p.sendMessage("§e"+job.getJob_spName()+"(最大値)§f: §a"+getPlayerStats(p).getSp()+"§e("+getPlayerStats(p).getMaxsp()+")");
             p.sendMessage("§c攻撃力§f: §c"+getATK(p));
             p.sendMessage("§3防御力§f: §3"+getDEF(p));
@@ -191,6 +199,12 @@ public class StatsCore implements Listener, CommandExecutor {
                 p.sendMessage("§3DEF: 防御力 1Pにつき0.2上昇します。");
                 p.sendMessage("§aSPD: 速度 1Pにつき5%上昇します。");
                 p.sendMessage("§6SP: §e"+job.getJob_spName()+" 1Pにつき最大値が1上昇します。");
+                return true;
+            }else if(args[0].equalsIgnoreCase("reset")){
+                plugin.job.userDataSave(p,plugin.job.getUserJob(p),1,0);
+                savePlayerStats(p,0,0,0,0,0);
+                p.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
+                Bukkit.broadcastMessage(plugin.prefix+"§a§l§o"+p.getName()+"§6§l§oはすべてのパワーを神に捧げた…");
                 return true;
             }
         }
@@ -216,7 +230,7 @@ public class StatsCore implements Listener, CommandExecutor {
 
         p.sendMessage("§e/stats : 自分のステータスを確認します。");
         p.sendMessage("§e/stats powerup : ステータス割り振りのヘルプを見ます。");
-        p.sendMessage("§e/stats powerup atk/def/spd/sp 割り振り分 : ポイントを割り振ります");
+        p.sendMessage("§e/stats powerup ATK/DEF/SPD/SP 割り振り分 : ポイントを割り振ります");
         return true;
     }
 
@@ -225,7 +239,9 @@ public class StatsCore implements Listener, CommandExecutor {
         Job job = plugin.job.getUserJob(p);
         int joblevel = plugin.job.getUserJobLevel(job.getJobname(),p);
         double jobstats = job.getAttack(joblevel);
-        return stats+jobstats;
+        BigDecimal bd1= new BigDecimal(stats+"");
+        BigDecimal bd2 = new BigDecimal(jobstats+"");
+        return bd1.add(bd2).doubleValue();
     }
 
     public double getDEF(Player p){
@@ -233,7 +249,9 @@ public class StatsCore implements Listener, CommandExecutor {
         Job job = plugin.job.getUserJob(p);
         int joblevel = plugin.job.getUserJobLevel(job.getJobname(),p);
         double jobstats = job.getDefense(joblevel);
-        return stats+jobstats;
+        BigDecimal bd1= new BigDecimal(stats+"");
+        BigDecimal bd2 = new BigDecimal(jobstats+"");
+        return bd1.add(bd2).doubleValue();
     }
 
     public double getSPD(Player p){
@@ -241,7 +259,9 @@ public class StatsCore implements Listener, CommandExecutor {
         Job job = plugin.job.getUserJob(p);
         int joblevel = plugin.job.getUserJobLevel(job.getJobname(),p);
         double jobstats = job.getSpeed(joblevel);
-        return stats+jobstats;
+        BigDecimal bd1= new BigDecimal(stats+"");
+        BigDecimal bd2 = new BigDecimal(jobstats+"");
+        return bd1.add(bd2).doubleValue();
     }
 
     public int getStatsPoint(Player p){
@@ -271,7 +291,7 @@ public class StatsCore implements Listener, CommandExecutor {
         }else if(type==StatsType.DEF){
             Stats stats = getPlayerStats(p);
             BigDecimal bd1= new BigDecimal(i+"");
-            BigDecimal bd2 = new BigDecimal("0.1");
+            BigDecimal bd2 = new BigDecimal("0.02");
             BigDecimal result2 = bd1.multiply(bd2);
             savePlayerStats(p,stats.getAttack(),stats.getDefense()+result2.doubleValue(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()-i);
             p.sendMessage("§3防御力§aを§e"+i+"P分§a強化しました。(+"+result2.doubleValue()+")");

@@ -31,6 +31,7 @@ public class SkillCore {
     #書き方例
 
     viewname: '突き上げ切り' #PHのスキル名で出てくるもの
+    cooltime: -1 #クールタイム。tick単位。-1は未指定。
     needlevel: -1 #必要レベル。-1は未指定
     usepoint: 3 #使用MP。
     needjob: 'none' #使用に必要な職業。noneで未指定
@@ -38,7 +39,7 @@ public class SkillCore {
     no_point_msg: '§c<mp_name>が足りません！ 必要<mp_name>: <usepoint>' #MPがない場合のメッセージ PH使用可能
     no_needjob_msg: '§cあなたの職業ではこのスキルを使用できません！ 必要職業: <need_job>' #必要職業ではない場合のメッセージ PH使用可能
     no_needlevel_msg: '§cあなたのレベルではこのスキルを使用できません！ 必要レベル: <need_level>' #必要レベルが足りない場合のメッセージ PH使用可能
-
+    cooltime_msg: '§c現在クールタイム中です！' #必要レベルが足りない場合のメッセージ noneで未指定 PH使用可能
      */
 
     public void loadFiles(){
@@ -52,8 +53,9 @@ public class SkillCore {
 
             if (f.exists()) {
                 String skillname = s.replaceFirst(".yml","").split("_",2)[0];
-                SkillData skillData = new SkillData(plugin,plugin.job,skillname,data.getString("viewname"),data.getInt("needlevel"),data.getInt("usepoint")
-                ,data.getString("needjob"),data.getString("cs_name"),data.getString("no_point_msg"),data.getString("no_needjob_msg"),data.getString("no_needlevel_msg"));
+                SkillData skillData = new SkillData(plugin,plugin.job,skillname,data.getString("viewname"),data.getInt("cooltime"),data.getInt("needlevel"),data.getInt("usepoint")
+                ,data.getString("needjob"),data.getString("cs_name"),data.getString("no_point_msg"),data.getString("no_needjob_msg"),
+                        data.getString("no_needlevel_msg"),data.getString("cooltime_msg"));
                 skills.put(skillname,skillData);
             }
         }
