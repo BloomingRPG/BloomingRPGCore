@@ -41,6 +41,10 @@ public class Stats {
         }
     }
 
+    public void setStats_sp(int stats_sp){
+        this.stats_sp = stats_sp;
+    }
+
     public int getStats_sp() {
         return stats_sp;
     }

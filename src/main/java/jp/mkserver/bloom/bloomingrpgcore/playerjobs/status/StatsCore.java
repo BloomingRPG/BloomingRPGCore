@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class StatsCore implements Listener, CommandExecutor {
     public void savePlayerStats(Player p,double attack,double defense,double speed,int sp,int statspoint){
         Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
             if(!isUserStatsDataAlive(p)){
-                int statspoints = (plugin.job.getUserLevel(p)-1)*5;
+                int statspoints = (plugin.job.getUserLevel(p)-1);
                 plugin.mysql.execute("INSERT INTO stats (player,uuid,attack,defense,speed,sp,statspoint)  VALUES ('"+p.getName()+"','"+p.getUniqueId().toString()+"',"+attack+","+defense+","+speed+","+sp+","+statspoints+");");
             }else{
                 plugin.mysql.execute("UPDATE stats SET attack = "+attack+", defense = "+defense+",speed = "+speed+", sp = "+sp+" , statspoint = "+statspoint+";");
@@ -43,7 +44,7 @@ public class StatsCore implements Listener, CommandExecutor {
             stats.setAttack(attack);
             stats.setDefense(defense);
             stats.setSpeed(speed);
-            stats.setMaxsp(sp);
+            stats.setStats_sp(sp);
             stats.setStatspoint(statspoint);
             playerStats.put(p.getUniqueId(),stats);
         });
@@ -68,7 +69,7 @@ public class StatsCore implements Listener, CommandExecutor {
                 int statspoint = rs.getInt("statspoint");
                 Job job = plugin.job.getUserJob(p);
                 int joblevel = plugin.job.getUserJobLevel(job.getJobname(),p);
-                Stats stats = new Stats(p.getUniqueId(),attack,defense,spped,job.getJob_skillpoint(joblevel),sp,statspoint);
+                Stats stats = new Stats(p.getUniqueId(),attack,defense,spped,sp,job.getJob_skillpoint(joblevel),statspoint);
                 playerStats.put(p.getUniqueId(),stats);
                 query.close();
                 return;
@@ -258,21 +259,35 @@ public class StatsCore implements Listener, CommandExecutor {
         }
         if(type==StatsType.ATK){
             Stats stats = getPlayerStats(p);
-            savePlayerStats(p,stats.getAttack()+(i*0.2),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()-i);
-            p.sendMessage("§c攻撃力§aを§e"+i+"分§a強化しました。");
+            BigDecimal bd1= new BigDecimal(i+"");
+            BigDecimal bd2 = new BigDecimal("0.1");
+            BigDecimal result2 = bd1.multiply(bd2);
+            savePlayerStats(p,stats.getAttack()+result2.doubleValue(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()-i);
+            p.sendMessage("§c攻撃力§aを§e"+i+"P分§a強化しました。(+"+result2.doubleValue()+")");
         }else if(type==StatsType.DEF){
             Stats stats = getPlayerStats(p);
-            savePlayerStats(p,stats.getAttack(),stats.getDefense()+(i*0.2), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()-i);
-            p.sendMessage("§3防御力§aを§e"+i+"P分§a強化しました。");
+            BigDecimal bd1= new BigDecimal(i+"");
+            BigDecimal bd2 = new BigDecimal("0.1");
+            BigDecimal result2 = bd1.multiply(bd2);
+            savePlayerStats(p,stats.getAttack(),stats.getDefense()+result2.doubleValue(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()-i);
+            p.sendMessage("§3防御力§aを§e"+i+"P分§a強化しました。(+"+result2.doubleValue()+")");
         }else if(type==StatsType.SPD){
             Stats stats = getPlayerStats(p);
-            savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed()+(i*0.05), stats.getStats_sp(),stats.getStatspoint()-i);
-            p.sendMessage("§a速度§aを§e"+i+"P分§a強化しました。");
+            BigDecimal bd1= new BigDecimal(i+"");
+            BigDecimal bd2 = new BigDecimal("0.01");
+            BigDecimal result2 = bd1.multiply(bd2);
+            savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed()+result2.doubleValue(), stats.getStats_sp(),stats.getStatspoint()-i);
+            p.sendMessage("§a速度§aを§e"+i+"P分§a強化しました。(+"+result2.doubleValue()+"%)");
+            p.setWalkSpeed(plugin.job.getFloatSpeed(false,(float)plugin.stats.getSPD(p)));
         }else if(type==StatsType.SP){
+            if(i%5!=0){
+                p.sendMessage("§cSPのみ、5ポイントごとの使用が必要です！");
+                return;
+            }
             Stats stats = getPlayerStats(p);
-            savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()-i);
+            savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp()+(i/5),stats.getStatspoint()-i);
             String spname = plugin.job.getUserJob(p).getJob_spName();
-            p.sendMessage("§r"+spname+"§aを§e"+i+"P分§a強化しました。");
+            p.sendMessage("§e"+spname+"§aを§e"+i+"P分§a強化しました。(+"+(i/5)+")");
         }
     }
 

@@ -4,8 +4,8 @@
 中心となるプラグインです。  
 
 ### Todo
-次回の大型アップデート: v0.2.2  
-https://github.com/bloomingrpg/BloomingRPGCore/issues/11
+次回の大型アップデート: v0.2.3  
+https://github.com/bloomingrpg/BloomingRPGCore/issues/12
 
 ### Version History
 v0.1.0: 作成。 readme.md作成&編集。  

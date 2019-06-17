@@ -80,7 +80,7 @@ public class JobsCore implements Listener, CommandExecutor {
                     p.sendMessage(plugin.prefix+"§e§lJobLevelUP!! §6§l"+joblevel+" => "+(joblevel+1));
                     playerJobDataSave(p,job,joblevel+1,isUserJobOverflow(job.getJobname(),p));
                     Stats stats = plugin.stats.getPlayerStats(p);
-                    plugin.stats.savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()+5);
+                    plugin.stats.savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()+1);
                     plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(joblevel+1));
                 }
                 p.sendMessage(plugin.prefix+"§e§lLevelUP!! §6§l"+level+" => "+(level+1));
@@ -230,7 +230,7 @@ public class JobsCore implements Listener, CommandExecutor {
         }
 
         if(plugin.stats.getSPD(p)!=1.0){
-            p.setWalkSpeed((float)plugin.stats.getSPD(p));
+            p.setWalkSpeed(getFloatSpeed(false,(float)(plugin.stats.getSPD(p))));
         }
 
         if(job.getSphealsecond(level)!=0&&job.getSphealvalue(level)!=0){
@@ -250,7 +250,14 @@ public class JobsCore implements Listener, CommandExecutor {
         }
     }
 
-
+    public float getFloatSpeed(boolean isFly,float speed){
+        final float defaultSpeed = isFly ? 0.1f : 0.2f;
+        if (speed < 10f) {
+            return defaultSpeed * speed;
+        }else{
+            return 1f;
+        }
+    }
 
 
     public void userDataSave(Player p, Job job, int level, int exp){
