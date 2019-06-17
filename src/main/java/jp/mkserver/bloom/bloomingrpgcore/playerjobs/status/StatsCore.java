@@ -34,18 +34,22 @@ public class StatsCore implements Listener, CommandExecutor {
 
     public void savePlayerStats(Player p,double attack,double defense,double speed,int sp,int statspoint){
         Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
-            if(!isUserStatsDataAlive(p)){
-                int statspoints = (plugin.job.getUserLevel(p)-1);
-                plugin.mysql.execute("INSERT INTO stats (player,uuid,attack,defense,speed,sp,statspoint)  VALUES ('"+p.getName()+"','"+p.getUniqueId().toString()+"',"+attack+","+defense+","+speed+","+sp+","+statspoints+");");
-            }else{
-                plugin.mysql.execute("UPDATE stats SET attack = "+attack+", defense = "+defense+",speed = "+speed+", sp = "+sp+" , statspoint = "+statspoint+";");
-            }
             Stats stats = getPlayerStats(p);
+            if(stats==null){
+                stats = new Stats(p.getUniqueId(),attack,defense,speed,sp,plugin.job.getUserJob(p).getJob_skillpoint(plugin.job.getUserJobLevel(plugin.job.getUserjobName(p),p)),statspoint);
+            }
             stats.setAttack(attack);
             stats.setDefense(defense);
             stats.setSpeed(speed);
             stats.setStats_sp(sp);
             stats.setStatspoint(statspoint);
+            if(!isUserStatsDataAlive(p)){
+                int statspoints = (plugin.job.getUserLevel(p)-1);
+                stats.setStatspoint(statspoints);
+                plugin.mysql.execute("INSERT INTO stats (player,uuid,attack,defense,speed,sp,statspoint)  VALUES ('"+p.getName()+"','"+p.getUniqueId().toString()+"',"+attack+","+defense+","+speed+","+sp+","+statspoints+");");
+            }else{
+                plugin.mysql.execute("UPDATE stats SET attack = "+attack+", defense = "+defense+",speed = "+speed+", sp = "+sp+" , statspoint = "+statspoint+";");
+            }
             playerStats.put(p.getUniqueId(),stats);
         });
     }
@@ -53,6 +57,7 @@ public class StatsCore implements Listener, CommandExecutor {
     public void loadPlayerStats(Player p){
         if(!isUserStatsDataAlive(p)){
             savePlayerStats(p,0,0,0,0,0);
+            return;
         }
         MySQLManagerV2.Query query = plugin.mysql.query("SELECT * FROM stats WHERE uuid = '"+p.getUniqueId().toString()+"';");
         ResultSet rs = query.getRs();
