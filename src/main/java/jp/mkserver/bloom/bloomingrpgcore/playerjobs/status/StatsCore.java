@@ -2,7 +2,6 @@ package jp.mkserver.bloom.bloomingrpgcore.playerjobs.status;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import jp.mkserver.bloom.bloomingrpgcore.MySQLManagerV2;
-import jp.mkserver.bloom.bloomingrpgcore.playerjobs.StatsViewer;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.Job;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.File;
@@ -82,6 +83,9 @@ public class JobsCore implements Listener, CommandExecutor {
                     Stats stats = plugin.stats.getPlayerStats(p);
                     plugin.stats.savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()+1);
                     plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(joblevel+1));
+                    PlayerStats st = playerstats.get(p.getUniqueId());
+                    st.joblevel = joblevel+1;
+                    playerstats.put(p.getUniqueId(),st);
                 }
                 p.sendMessage(plugin.prefix+"§e§lLevelUP!! §6§l"+level+" => "+(level+1));
                 for(Player pp : Bukkit.getOnlinePlayers()){
@@ -211,6 +215,52 @@ public class JobsCore implements Listener, CommandExecutor {
             }
         }
     }
+
+    @EventHandler
+    public void onExpGet(PlayerExpChangeEvent e){
+        int exp = getPlayerExp(e.getPlayer())+e.getAmount();
+        e.setAmount(0);
+        playerAddEXP(e.getPlayer(),exp);
+        e.getPlayer().setExp(0);
+        e.getPlayer().setLevel(0);
+    }
+
+    // Calculate amount of EXP needed to level up
+    public int getExpToLevelUp(int level){
+        if(level <= 15){
+            return 2*level+7;
+        } else if(level <= 30){
+            return 5*level-38;
+        } else {
+            return 9*level-158;
+        }
+    }
+
+    // Calculate total experience up to a level
+    public int getExpAtLevel(int level){
+        if(level <= 16){
+            return (int) (Math.pow(level,2) + 6*level);
+        } else if(level <= 31){
+            return (int) (2.5*Math.pow(level,2) - 40.5*level + 360.0);
+        } else {
+            return (int) (4.5*Math.pow(level,2) - 162.5*level + 2220.0);
+        }
+    }
+
+    // Calculate player's current EXP amount
+    public int getPlayerExp(Player player){
+        int exp = 0;
+        int level = player.getLevel();
+
+        // Get the amount of XP in past levels
+        exp += getExpAtLevel(level);
+
+        // Get amount of XP towards next level
+        exp += Math.round(getExpToLevelUp(level) * player.getExp());
+
+        return exp;
+    }
+
 
     @EventHandler
     public void onAttack(EntityDamageByEntityEvent e){
