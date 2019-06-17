@@ -62,7 +62,7 @@ public class JobsCore implements Listener, CommandExecutor {
 
     public void loadExpTable(){
         int exp = 100;
-        for(int count=1;count<=50;count++){
+        for(int count=1;count<=100;count++){
             exptable_normal.add(exp);
             exp = exp + 30;
         }
@@ -71,29 +71,47 @@ public class JobsCore implements Listener, CommandExecutor {
     public void levelUpcheck(Player p){
         Job job = getUserJob(p);
         List<Integer> exptable = exptable_normal;
-        int level = getUserLevel(p);
-        int joblevel = getUserJobLevel(job.getJobname(),p);
-        if(level <= 100){
-            int exp = getUserExp(p);
+        int oldlevel = getUserLevel(p);
+        int level = oldlevel;
+        int oldjoblevel = getUserJobLevel(job.getJobname(),p);
+        int joblevel = oldjoblevel;
+
+        int exp = getUserExp(p);
+        while (true){
             int needexp = exptable.get(level-1);
-            if(exp>=needexp){
-                if((isUserJobOverflow(job.getJobname(),p)&&joblevel<=100)||(!isUserJobOverflow(job.getJobname(),p)&&joblevel<=50)){
-                    p.sendMessage(plugin.prefix+"§e§lJobLevelUP!! §6§l"+joblevel+" => "+(joblevel+1));
-                    playerJobDataSave(p,job,joblevel+1,isUserJobOverflow(job.getJobname(),p));
-                    Stats stats = plugin.stats.getPlayerStats(p);
-                    plugin.stats.savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()+1);
-                    plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(joblevel+1));
-                    PlayerStats st = playerstats.get(p.getUniqueId());
-                    st.joblevel = joblevel+1;
-                    playerstats.put(p.getUniqueId(),st);
+            if(level < 100){
+                if(exp>=needexp) {
+                    exp = exp - needexp;
+                    level++;
+                    if ((isUserJobOverflow(job.getJobname(), p) && joblevel < 100) || (!isUserJobOverflow(job.getJobname(), p) && joblevel < 50)) {
+                        joblevel++;
+                    }
+                }else{
+                    break;
                 }
-                p.sendMessage(plugin.prefix+"§e§lLevelUP!! §6§l"+level+" => "+(level+1));
-                for(Player pp : Bukkit.getOnlinePlayers()){
-                    pp.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1.0f,1.5f);
-                }
-                p.getWorld().spawnParticle(Particle.TOTEM, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
-                userDataSave(p,job,level+1,exp-needexp);
+            }else{
+                break;
             }
+        }
+
+        if(oldjoblevel != joblevel){
+            p.sendMessage(plugin.prefix+"§e§lJobLevelUP!! §6§l"+oldjoblevel+" => "+joblevel);
+            playerJobDataSave(p,job,joblevel,isUserJobOverflow(job.getJobname(),p));
+            Stats stats = plugin.stats.getPlayerStats(p);
+            plugin.stats.savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()+(joblevel-oldjoblevel));
+            plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(joblevel));
+            PlayerStats st = playerstats.get(p.getUniqueId());
+            st.joblevel = joblevel;
+            playerstats.put(p.getUniqueId(),st);
+        }
+
+        if(oldlevel != level){
+            p.sendMessage(plugin.prefix+"§e§lLevelUP!! §6§l"+oldlevel+" => "+(level));
+            for(Player pp : Bukkit.getOnlinePlayers()){
+                pp.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1.0f,1.5f);
+            }
+            p.getWorld().spawnParticle(Particle.TOTEM, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
+            userDataSave(p,job,level,exp);
         }
     }
 
@@ -335,7 +353,9 @@ public class JobsCore implements Listener, CommandExecutor {
                 stats.jobisoverflow = isUserJobOverflow(stats.jobname,p);
                 stats.joblevel = getUserJobLevel(stats.jobname,p);
                 playerstats.put(p.getUniqueId(),stats);
-                levelUpcheck(p);
+                Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()-> {
+                    levelUpcheck(p);
+                },20);
                 return;
             }
             plugin.mysql.execute("UPDATE jobs SET job = '"+job.getJobname()+"' , level = "+levels+" , exp = "+exps+" WHERE uuid = '"+p.getUniqueId().toString()+"';");
@@ -347,7 +367,9 @@ public class JobsCore implements Listener, CommandExecutor {
             stats.jobisoverflow = isUserJobOverflow(stats.jobname,p);
             stats.joblevel = getUserJobLevel(stats.jobname,p);
             playerstats.put(p.getUniqueId(),stats);
-            levelUpcheck(p);
+            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()-> {
+                levelUpcheck(p);
+            },20);
         });
     }
 
@@ -375,7 +397,6 @@ public class JobsCore implements Listener, CommandExecutor {
                 stats.jobisoverflow = overflow;
                 stats.level = getUserLevel(p);
                 playerstats.put(p.getUniqueId(),stats);
-                levelUpcheck(p);
                 return;
             }
             plugin.mysql.execute("UPDATE my_jobs SET level = "+levels+" , overflow = "+overflow+" WHERE uuid = '"+p.getUniqueId().toString()+"' AND job = '"+job.getJobname()+"';");
