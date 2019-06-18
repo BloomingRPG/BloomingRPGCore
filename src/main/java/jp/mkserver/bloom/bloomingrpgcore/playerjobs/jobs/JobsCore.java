@@ -97,8 +97,6 @@ public class JobsCore implements Listener, CommandExecutor {
         if(oldjoblevel != joblevel){
             p.sendMessage(plugin.prefix+"§e§lJobLevelUP!! §6§l"+oldjoblevel+" => "+joblevel);
             playerJobDataSave(p,job,joblevel,isUserJobOverflow(job.getJobname(),p));
-            Stats stats = plugin.stats.getPlayerStats(p);
-            plugin.stats.savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()+(joblevel-oldjoblevel));
             plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(joblevel));
             PlayerStats st = playerstats.get(p.getUniqueId());
             st.joblevel = joblevel;
@@ -112,6 +110,8 @@ public class JobsCore implements Listener, CommandExecutor {
             }
             p.getWorld().spawnParticle(Particle.TOTEM, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
             userDataSave(p,job,level,exp);
+            Stats stats = plugin.stats.getPlayerStats(p);
+            plugin.stats.savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()+(level-oldlevel));
         }
     }
 
