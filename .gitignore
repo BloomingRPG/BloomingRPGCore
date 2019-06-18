@@ -1,2 +1,7 @@
 #CrackShotのAPIはだめー！
 src/main/java/jp/mkserver/bloom/bloomingrpgcore/CrackShotAPI.java
+
+# User-specific stuff:
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries

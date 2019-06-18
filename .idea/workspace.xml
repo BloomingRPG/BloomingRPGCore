@@ -2,22 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d31715fa-710f-466d-8b5b-c67c94e79342" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/CrackShotAPI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/buff/AbstractBuff.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/buff/Blessing.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/buff/BuffCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/npc/NPCScript.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/JobsCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/jobs/JobsCore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillCore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/StatsCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/status/StatsCore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/spawn/Spawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/spawn/Spawn.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -73,7 +59,11 @@
       </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="96">
+              <caret line="6" column="10" lean-forward="true" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -182,6 +172,7 @@
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/BloomingRPGCore.java" />
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/CrackShotAPI.java" />
         <option value="$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/playerjobs/skill/SkillCore.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -227,6 +218,11 @@
             <path>
               <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
               <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
+              <item name=".idea" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
               <item name="libs" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -258,106 +254,6 @@
             <path>
               <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
               <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="buff" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="flag" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="japanizer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="npc" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="party" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="playerjobs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="playerjobs" type="462c0819:PsiDirectoryNode" />
-              <item name="jobs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="playerjobs" type="462c0819:PsiDirectoryNode" />
-              <item name="skill" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="playerjobs" type="462c0819:PsiDirectoryNode" />
-              <item name="status" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bloomingrpgcore" type="462c0819:PsiDirectoryNode" />
-              <item name="spawn" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BloomingRPGCore" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BloomingRPGCore" type="462c0819:PsiDirectoryNode" />
               <item name="target" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -371,7 +267,10 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/libs" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Background" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -698,7 +597,21 @@
       <option name="project" value="LOCAL" />
       <updated>1560850989938</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="v0.2.4 Custom Buff and CrackShotAPI added">
+      <created>1560892656270</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1560892656270</updated>
+    </task>
+    <task id="LOCAL-00039" summary="v0.2.4 gitignore miss">
+      <created>1560892715065</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1560892715065</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TodoView">
@@ -714,7 +627,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2675906" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2675906" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -723,7 +636,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32936078" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32936078" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -783,8 +696,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="v0.1.3 party bug fix and chat added" />
-    <MESSAGE value="v0.1.3 readme.md fix" />
     <MESSAGE value="v0.1.4 FlagManger/Japanizer/NPCScript added" />
     <MESSAGE value="v0.1.4 readme.md fix" />
     <MESSAGE value="v0.1.5 NPCscript powerup" />
@@ -808,7 +719,9 @@
     <MESSAGE value="v0.2.2 レベルアップ処理のバグ修正" />
     <MESSAGE value="v0.2.3 many bug fix" />
     <MESSAGE value="v0.2.3 JobsCore bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="v0.2.3 JobsCore bug fix" />
+    <MESSAGE value="v0.2.4 Custom Buff and CrackShotAPI added" />
+    <MESSAGE value="v0.2.4 gitignore miss" />
+    <option name="LAST_COMMIT_MESSAGE" value="v0.2.4 gitignore miss" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/jp/mkserver/bloom/bloomingrpgcore/MySQLManagerV2.java">
@@ -1135,7 +1048,11 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="6" column="10" lean-forward="true" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
+        </state>
+      </provider>
     </entry>
   </component>
 </project>
