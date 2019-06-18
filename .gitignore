@@ -5,3 +5,10 @@ src/main/java/jp/mkserver/bloom/bloomingrpgcore/CrackShotAPI.java
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/dictionaries
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# IntelliJ
+out/
