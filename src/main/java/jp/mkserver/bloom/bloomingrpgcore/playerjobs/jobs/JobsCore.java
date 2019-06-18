@@ -630,7 +630,7 @@ public class JobsCore implements Listener, CommandExecutor {
                 return true;
             }else if(args[0].equalsIgnoreCase("overflow")){
                 playerJobDataSave(p,getUserJob(p),getUserJobLevel(getUserJob(p).getJobname(),p),true);
-                p.getWorld().spawnParticle(Particle.FALLING_DUST, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
+                p.getWorld().spawnParticle(Particle.END_ROD, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
                 Bukkit.broadcastMessage(plugin.prefix+"§6§l§o"+p.getName()+"§5§l§oは"+getUserJob(p).getJobname()+"§5§l§oの力を解放した…！");
                 return true;
             }

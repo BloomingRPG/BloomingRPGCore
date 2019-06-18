@@ -1,5 +1,6 @@
 package jp.mkserver.bloom.bloomingrpgcore;
 
+import jp.mkserver.bloom.bloomingrpgcore.buff.BuffCore;
 import jp.mkserver.bloom.bloomingrpgcore.flag.FlagManager;
 import jp.mkserver.bloom.bloomingrpgcore.npc.NPCScript;
 import jp.mkserver.bloom.bloomingrpgcore.party.PartyCore;
@@ -35,11 +36,13 @@ public final class BloomingRPGCore extends JavaPlugin {
     private LoginBonus loginBonus;
     private PartyCore partyCore;
     private NPCScript npc;
-    private Spawn spawn;
+
+    public Spawn spawn;
 
     public JobsCore job;
     public SkillCore skill;
     public StatsCore stats;
+    public BuffCore buff;
 
     public FlagManager flag;
 
@@ -60,9 +63,12 @@ public final class BloomingRPGCore extends JavaPlugin {
         npc = new NPCScript(this);
         spawn = new Spawn(this);
 
+        buff = new BuffCore(this);
         stats = new StatsCore(this);
         job = new JobsCore(this);
         skill = new SkillCore(this);
+
+        CrackShotAPI.init();
     }
 
     @Override

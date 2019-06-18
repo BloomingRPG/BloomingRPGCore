@@ -189,7 +189,11 @@ public class NPCScript implements Listener, CommandExecutor {
                     }
                 }else if(script.startsWith("command ")){
                     script = script.replaceFirst("command ","");
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(),script.replace("<player>",p.getName()).replace("<select_count>",select_count+""));
+                    int finalSelect_count = select_count;
+                    String finalScript = script;
+                    Bukkit.getScheduler().runTask(plugin,()-> {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalScript.replace("<player>", p.getName()).replace("<select_count>", finalSelect_count + ""));
+                    });
                 }else if(script.startsWith("addflag ")){
                     script = script.replaceFirst("addflag ","");
                     plugin.flag.addPlayerFlag(p,script);

@@ -9,12 +9,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
-public class Spawn implements CommandExecutor {
+public class Spawn implements CommandExecutor , Listener {
 
 
     BloomingRPGCore plugin;
@@ -22,6 +26,7 @@ public class Spawn implements CommandExecutor {
     public Spawn(BloomingRPGCore plugin){
         this.plugin = plugin;
         plugin.getCommand("spawn").setExecutor(this);
+        plugin.getServer().getPluginManager().registerEvents(this,plugin);
     }
 
     public Location getLocaton(){
@@ -77,7 +82,6 @@ public class Spawn implements CommandExecutor {
                 double zs = locs.getZ();
                 if(world.equalsIgnoreCase(worlds)&&x==xs&&y==ys&&z==zs){
                     p.sendMessage("§e謎の力で転送された！");
-                    p.getWorld().spawnParticle(Particle.END_ROD, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
                     p.teleport(getLocaton());
                     p.getWorld().spawnParticle(Particle.END_ROD, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
                     for(Player pp : Bukkit.getOnlinePlayers()){
@@ -106,5 +110,21 @@ public class Spawn implements CommandExecutor {
         }
         p.sendMessage("§a/spawn : 神様がスポーン地点に転送してくれます。5秒間動いてはいけません。クールダウン30秒");
         return true;
+    }
+
+    @EventHandler
+    public void onDeathScreenCancel(PlayerDeathEvent e){
+        Player p = e.getEntity();
+        p.setBedSpawnLocation(plugin.spawn.getLocaton());
+        p.spigot().respawn();
+        Random rnd = new Random();
+        int random = rnd.nextInt(3)+1;
+        if(random==1){
+            p.sendMessage("§e???: まだ死ぬべきではないぞ…");
+        }else if(random==2){
+            p.sendMessage("§e???: 死んだのか…薬草はいるかえ？(煽り)");
+        }else if(random==3){
+            p.sendMessage("§e???: おおゆうしゃよ しんでしまうとは なさけ…wなイwwｯﾋｯﾋww");
+        }
     }
 }

@@ -206,13 +206,46 @@ public class StatsCore implements Listener, CommandExecutor {
                 p.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
                 Bukkit.broadcastMessage(plugin.prefix+"§a§l§o"+p.getName()+"§6§l§oはすべてのパワーを神に捧げた…");
                 return true;
+            }else{
+                Player send = p;
+                p = Bukkit.getPlayer(args[0]);
+
+                if(p==null||!p.isOnline()){
+                    send.sendMessage("§cそのプレイヤーはオンラインではありません！");
+                    return true;
+                }
+
+                int level = plugin.job.getUserLevel(p);
+                int need_exp;
+                if(level!=100){
+                    need_exp = plugin.job.exptable_normal.get(level-1) - plugin.job.getUserExp(p);
+                }else{
+                    need_exp = 0;
+                }
+                Job job = plugin.job.getUserJob(p);
+                send.sendMessage("§6§l"+p.getName()+"§e(Lv."+plugin.job.getUserLevel(p)+") §fの「"+job.getJob_ViewName()+" §eLv."+plugin.job.getUserJobLevel(job.getJobname(),p)+"§f」 §f§lステータス");
+                send.sendMessage("§e次のレベルまで: "+need_exp+"EXP");
+                send.sendMessage("§eステータスポイント: §b"+getStatsPoint(p)+"P");
+                BigDecimal bd = new BigDecimal(p.getHealth());
+                send.sendMessage("§aHP(最大値)"+"§f: §a"+bd.setScale(1, RoundingMode.HALF_UP)+"§e("+p.getHealthScale()+")");
+                send.sendMessage("§e"+job.getJob_spName()+"(最大値)§f: §a"+getPlayerStats(p).getSp()+"§e("+getPlayerStats(p).getMaxsp()+")");
+                send.sendMessage("§c攻撃力§f: §c"+getATK(p));
+                send.sendMessage("§3防御力§f: §3"+getDEF(p));
+                send.sendMessage("§a速度§f: §a通常の x"+getSPD(p));
+                send.sendMessage("§e"+job.getJob_spName()+"§e回復速度§f: §a"+job.getSphealsecond(level)+"秒に"+job.getSphealvalue(level)+"回復");
+                send.sendMessage("§dHP§e回復速度§f: §a"+job.getHphealsecond(level)+"秒に"+job.getHphealvalue(level)+"回復");
+                return true;
             }
         }
 
         if(args.length == 3){
             if(args[0].equalsIgnoreCase("powerup")){
-                if(args[1].equals("ATK")||args[1].equals("DEF")||args[1].equals("SPD")||args[1].equals("SP")){
-                    StatsType type = StatsType.valueOf(args[1]);
+                if(args[1].equalsIgnoreCase("ATK")||args[1].equalsIgnoreCase("DEF")||args[1].equalsIgnoreCase("SPD")||args[1].equalsIgnoreCase("SP")){
+                    StatsType type = StatsType.fromString(args[1]);
+                    if(type==null){
+                        p.sendMessage("§cステータスタイプは ATK/DEF/SPD/SP のいずれかを選択してください。");
+                        return true;
+                    }
                     int i;
                     try{
                         i = Integer.parseInt(args[2]);
@@ -269,7 +302,16 @@ public class StatsCore implements Listener, CommandExecutor {
     }
 
     enum StatsType{
-        ATK,DEF,SPD,SP
+        ATK,DEF,SPD,SP;
+
+        public static StatsType fromString(String param) {
+            String toUpper = param.toUpperCase();
+            try {
+                return valueOf(toUpper);
+            }catch (Exception e){
+                return null;
+            }
+        }
     }
 
     public void useStatsPoint(Player p,StatsType type,int i){

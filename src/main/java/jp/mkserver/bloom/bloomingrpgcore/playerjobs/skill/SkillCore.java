@@ -1,19 +1,41 @@
 package jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill;
 
+import com.shampaggon.crackshot.CSUtility;
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
+import jp.mkserver.bloom.bloomingrpgcore.CrackShotAPI;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.HashMap;
 
-public class SkillCore {
+public class SkillCore implements CommandExecutor {
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if(!(sender instanceof Player)){
+            return true;
+        }
+        Player p = (Player)sender;
+        if(args.length==1){
+            if(new CSUtility().generateWeapon(args[0])!=null){
+                CrackShotAPI.fire(p,args[0], true);
+            }
+        }
+        return true;
+    }
 
     BloomingRPGCore plugin;
     public HashMap<String, SkillData> skills = new HashMap<>();
 
     public SkillCore(BloomingRPGCore plugin) {
         this.plugin = plugin;
+        plugin.getCommand("skill").setExecutor(this);
+        plugin.getCommand("sk").setExecutor(this);
         loadFiles();
         plugin.stats.reloadPlayerStats();
     }
