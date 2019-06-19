@@ -57,40 +57,54 @@ public class JobsCore implements Listener, CommandExecutor {
             }
         },60,2);
 
-        ConcurrentHashMap counter = new ConcurrentHashMap();
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,()->{
-            for(Player p : Bukkit.getOnlinePlayers()){
-                Job job = getUserJob(p);
-                int level = getUserJobLevel(job.getJobname(),p);
-                if(job.getSphealsecond(level)!=0&&job.getSphealvalue(level)!=0){
-                    if(!counter.containsKey(p.getUniqueId().toString()+"_SPHEAL")){
-                        counter.put(p.getUniqueId().toString()+"_SPHEAL",0);
-                    }
-                    int count = (int)counter.get(p.getUniqueId().toString()+"_SPHEAL");
-                    if(count>=job.getSPhealsecPlus(level)){
-                        plugin.stats.playerSPheal(p,job.getSphealvalue(level));
-                        count = 0;
-                    }
-                    counter.put(p.getUniqueId().toString()+"_SPHEAL",count);
-                }
-
-                if(job.getHphealsecond(level)!=0&&job.getHphealvalue(level)!=0){
-                    if(!counter.containsKey(p.getUniqueId().toString()+"_HPHEAL")){
-                        counter.put(p.getUniqueId().toString()+"_HPHEAL",0);
-                    }
-                    int count = (int)counter.get(p.getUniqueId().toString()+"_HPHEAL");
-                    if(count>=job.getSPhealsecPlus(level)){
-                        if(p.getHealth()+job.getHphealvalue(level)>p.getHealthScale()){
-                            p.setHealth(p.getHealthScale());
-                        }else{
-                            p.setHealth(p.getHealth()+job.getHphealvalue(level));
-                        }
-                        count = 0;
-                    }
-                    counter.put(p.getUniqueId().toString()+"_HPHEAL",count);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
+            ConcurrentHashMap<String,Integer> counter = new ConcurrentHashMap<>();
+            while (true){
+                counter = runTickEvent(counter);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        },60,20);
+        });
+    }
+
+    public ConcurrentHashMap<String,Integer> runTickEvent(ConcurrentHashMap<String,Integer> counter){
+        for(Player p : Bukkit.getOnlinePlayers()){
+            Job job = getUserJob(p);
+            int level = getUserJobLevel(job.getJobname(),p);
+            if(job.getSphealsecond(level)!=0&&job.getSphealvalue(level)!=0){
+                if(!counter.containsKey(p.getUniqueId().toString()+"_SPHEAL")){
+                    counter.put(p.getUniqueId().toString()+"_SPHEAL",0);
+                }
+                int count = counter.get(p.getUniqueId().toString()+"_SPHEAL");
+                count++;
+                if(count>=job.getSphealsecond(level)){
+                    plugin.stats.playerSPheal(p,job.getSphealvalue(level));
+                    count = 0;
+                }
+                counter.put(p.getUniqueId().toString()+"_SPHEAL",count);
+            }
+
+            if(job.getHphealsecond(level)!=0&&job.getHphealvalue(level)!=0){
+                if(!counter.containsKey(p.getUniqueId().toString()+"_HPHEAL")){
+                    counter.put(p.getUniqueId().toString()+"_HPHEAL",0);
+                }
+                int count = counter.get(p.getUniqueId().toString()+"_HPHEAL");
+                count++;
+                if(count>=job.getHphealsecond(level)){
+                    if(p.getHealth()+job.getHphealvalue(level)>p.getHealthScale()){
+                        p.setHealth(p.getHealthScale());
+                    }else{
+                        p.setHealth(p.getHealth()+job.getHphealvalue(level));
+                    }
+                    count = 0;
+                }
+                counter.put(p.getUniqueId().toString()+"_HPHEAL",count);
+            }
+        }
+        return counter;
     }
 
 
@@ -357,17 +371,16 @@ public class JobsCore implements Listener, CommandExecutor {
         }
 
         if(plugin.stats.getSPD(p)!=0){
-            p.setWalkSpeed(getFloatSpeed(false,((float)(plugin.stats.getSPD(p)))+1.0f));
+            p.setWalkSpeed(getFloatSpeed(0.2f,(float)(plugin.stats.getSPD(p))));
         }
     }
 
-    public float getFloatSpeed(boolean isFly,float speed){
-        final float defaultSpeed = isFly ? 0.1f : 0.2f;
-        if (speed < 10f) {
-            return defaultSpeed * speed;
-        }else{
-            return 1f;
+    public float getFloatSpeed(float spd,float speed){
+        final float defaultSpeed = 0.2f;
+        if (speed > 10f) {
+            speed = 10f;
         }
+        return spd+(defaultSpeed * speed);
     }
 
 

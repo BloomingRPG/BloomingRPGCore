@@ -194,6 +194,14 @@ public class StatsCore implements Listener, CommandExecutor {
                 savePlayerStats(p,0,0,0,0,0);
                 p.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
                 Bukkit.broadcastMessage(plugin.prefix+"§a§l§o"+p.getName()+"§6§l§oはすべてのパワーを神に捧げた…");
+                Player finalP = p;
+                Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()->{
+                    Player pp = Bukkit.getPlayer(finalP.getUniqueId());
+                    if(pp==null||!pp.isOnline()){
+                        return;
+                    }
+                    pp.setWalkSpeed(plugin.job.getFloatSpeed(0.2f,(float)getSPD(pp)));
+                },10);
                 return true;
             }else{
                 Player send = p;
@@ -333,7 +341,7 @@ public class StatsCore implements Listener, CommandExecutor {
             BigDecimal result2 = bd1.multiply(bd2);
             savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed()+result2.doubleValue(), stats.getStats_sp(),stats.getStatspoint()-i);
             p.sendMessage("§a速度§aを§e"+i+"P分§a強化しました。(+"+bd1.doubleValue()+"%)");
-            p.setWalkSpeed(plugin.job.getFloatSpeed(false,((float)plugin.stats.getSPD(p))+1.0f));
+            p.setWalkSpeed(plugin.job.getFloatSpeed(0.2f,(float)(stats.getSpeed()+result2.doubleValue())));
         }else if(type==StatsType.SP){
             if(i%5!=0){
                 p.sendMessage("§cSPのみ、5ポイントごとの使用が必要です！");
