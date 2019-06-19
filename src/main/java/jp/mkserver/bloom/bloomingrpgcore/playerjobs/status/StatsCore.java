@@ -9,9 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -58,6 +56,10 @@ public class StatsCore implements Listener, CommandExecutor {
     public void loadPlayerStats(Player p){
         if(!isUserStatsDataAlive(p)){
             savePlayerStats(p,0,0,0,0,0);
+            Bukkit.getScheduler().runTaskLater(plugin,()->{
+                Stats stats = new Stats(p.getUniqueId(),0,0,0,0,plugin.job.getUserJob(p).getJob_skillpoint(plugin.job.getUserLevel(p)),0);
+                playerStats.put(p.getUniqueId(),stats);
+            },10);
             return;
         }
         MySQLManagerV2.Query query = plugin.mysql.query("SELECT * FROM stats WHERE uuid = '"+p.getUniqueId().toString()+"';");
@@ -128,20 +130,7 @@ public class StatsCore implements Listener, CommandExecutor {
         for(Player p : Bukkit.getOnlinePlayers()){
             if(!playerStats.containsKey(p.getUniqueId())){
                 loadPlayerStats(p);
-                Job job = plugin.job.getUserJob(p);
-                plugin.job.playerStatsSync(p,job);
             }
-        }
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent e){
-        if(!playerStats.containsKey(e.getPlayer().getUniqueId())) {
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-                loadPlayerStats(e.getPlayer());
-                Job job = plugin.job.getUserJob(e.getPlayer());
-                plugin.job.playerStatsSync(e.getPlayer(), job);
-            }, 10);
         }
     }
 
@@ -185,7 +174,7 @@ public class StatsCore implements Listener, CommandExecutor {
             p.sendMessage("§e"+job.getJob_spName()+"(最大値)§f: §a"+getPlayerStats(p).getSp()+"§e("+getPlayerStats(p).getMaxsp()+")");
             p.sendMessage("§c攻撃力§f: §c"+getATK(p));
             p.sendMessage("§3防御力§f: §3"+getDEF(p));
-            p.sendMessage("§a速度§f: §a通常の x"+getSPD(p));
+            p.sendMessage("§a速度§f: §a通常の x"+(((float)plugin.stats.getSPD(p))+1.0f));
             p.sendMessage("§e"+job.getJob_spName()+"§e回復速度§f: §a"+job.getSphealsecond(level)+"秒に"+job.getSphealvalue(level)+"回復");
             p.sendMessage("§dHP§e回復速度§f: §a"+job.getHphealsecond(level)+"秒に"+job.getHphealvalue(level)+"回復");
             return true;
@@ -231,7 +220,7 @@ public class StatsCore implements Listener, CommandExecutor {
                 send.sendMessage("§e"+job.getJob_spName()+"(最大値)§f: §a"+getPlayerStats(p).getSp()+"§e("+getPlayerStats(p).getMaxsp()+")");
                 send.sendMessage("§c攻撃力§f: §c"+getATK(p));
                 send.sendMessage("§3防御力§f: §3"+getDEF(p));
-                send.sendMessage("§a速度§f: §a通常の x"+getSPD(p));
+                send.sendMessage("§a速度§f: §a通常の x"+(((float)plugin.stats.getSPD(p))+1.0f));
                 send.sendMessage("§e"+job.getJob_spName()+"§e回復速度§f: §a"+job.getSphealsecond(level)+"秒に"+job.getSphealvalue(level)+"回復");
                 send.sendMessage("§dHP§e回復速度§f: §a"+job.getHphealsecond(level)+"秒に"+job.getHphealvalue(level)+"回復");
                 return true;
@@ -343,8 +332,8 @@ public class StatsCore implements Listener, CommandExecutor {
             BigDecimal bd2 = new BigDecimal("0.01");
             BigDecimal result2 = bd1.multiply(bd2);
             savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed()+result2.doubleValue(), stats.getStats_sp(),stats.getStatspoint()-i);
-            p.sendMessage("§a速度§aを§e"+i+"P分§a強化しました。(+"+result2.doubleValue()+"%)");
-            p.setWalkSpeed(plugin.job.getFloatSpeed(false,(float)plugin.stats.getSPD(p)));
+            p.sendMessage("§a速度§aを§e"+i+"P分§a強化しました。(+"+bd1.doubleValue()+"%)");
+            p.setWalkSpeed(plugin.job.getFloatSpeed(false,((float)plugin.stats.getSPD(p))+1.0f));
         }else if(type==StatsType.SP){
             if(i%5!=0){
                 p.sendMessage("§cSPのみ、5ポイントごとの使用が必要です！");

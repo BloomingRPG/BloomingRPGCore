@@ -22,8 +22,8 @@ public class SkillCore implements CommandExecutor {
         }
         Player p = (Player)sender;
         if(args.length==1){
-            if(new CSUtility().generateWeapon(args[0])!=null){
-                CrackShotAPI.fire(p,args[0], true);
+            if(CrackShotAPI.isNameWeaponContain(args[0])){
+                CrackShotAPI.fire(p,args[0],true);
             }
         }
         return true;
@@ -38,6 +38,7 @@ public class SkillCore implements CommandExecutor {
         plugin.getCommand("sk").setExecutor(this);
         loadFiles();
         plugin.stats.reloadPlayerStats();
+        plugin.job.reloadPlayerStats();
     }
 
     /*

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class JobsCore implements Listener, CommandExecutor {
 
@@ -54,7 +55,42 @@ public class JobsCore implements Listener, CommandExecutor {
                 Job job = getUserJob(p);
                 StatsViewer.showActionBar(p,"§6"+p.getName()+"§e(Lv."+getUserLevel(p)+") §r"+job.getJob_ViewName()+"§e(Lv."+getUserJobLevel(job.getJobname(),p)+"§e) "+job.getJob_spName()+"§e: §a"+plugin.stats.getPlayerStats(p).getSp()+"§f/§b"+plugin.stats.getPlayerStats(p).getMaxsp());
             }
-        },0,2);
+        },60,2);
+
+        ConcurrentHashMap counter = new ConcurrentHashMap();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,()->{
+            for(Player p : Bukkit.getOnlinePlayers()){
+                Job job = getUserJob(p);
+                int level = getUserJobLevel(job.getJobname(),p);
+                if(job.getSphealsecond(level)!=0&&job.getSphealvalue(level)!=0){
+                    if(!counter.containsKey(p.getUniqueId().toString()+"_SPHEAL")){
+                        counter.put(p.getUniqueId().toString()+"_SPHEAL",0);
+                    }
+                    int count = (int)counter.get(p.getUniqueId().toString()+"_SPHEAL");
+                    if(count>=job.getSPhealsecPlus(level)){
+                        plugin.stats.playerSPheal(p,job.getSphealvalue(level));
+                        count = 0;
+                    }
+                    counter.put(p.getUniqueId().toString()+"_SPHEAL",count);
+                }
+
+                if(job.getHphealsecond(level)!=0&&job.getHphealvalue(level)!=0){
+                    if(!counter.containsKey(p.getUniqueId().toString()+"_HPHEAL")){
+                        counter.put(p.getUniqueId().toString()+"_HPHEAL",0);
+                    }
+                    int count = (int)counter.get(p.getUniqueId().toString()+"_HPHEAL");
+                    if(count>=job.getSPhealsecPlus(level)){
+                        if(p.getHealth()+job.getHphealvalue(level)>p.getHealthScale()){
+                            p.setHealth(p.getHealthScale());
+                        }else{
+                            p.setHealth(p.getHealth()+job.getHphealvalue(level));
+                        }
+                        count = 0;
+                    }
+                    counter.put(p.getUniqueId().toString()+"_HPHEAL",count);
+                }
+            }
+        },60,20);
     }
 
 
@@ -68,7 +104,7 @@ public class JobsCore implements Listener, CommandExecutor {
         }
     }
 
-    public void levelUpcheck(Player p){
+    public synchronized void levelUpcheck(Player p){
         Job job = getUserJob(p);
         List<Integer> exptable = exptable_normal;
         int oldlevel = getUserLevel(p);
@@ -124,7 +160,7 @@ public class JobsCore implements Listener, CommandExecutor {
 
     attack: 0.0 #攻撃力。ここに書いた分だけ追加でダメージが入る
     defense: 0.0 #防御力。ここに書いた分だけダメージが減る
-    speed: 1.0 #速度。1が通常。10が最大で歩くスピードを変えられる。
+    speed: 1.0 #速度。書いた分だけスピードが増える。9が最大
     addhp: 0 #最大HP追加量。1でハート半分。
     sphealsec: 5 #スキルポイントの回復間隔。秒単位。
     sphealval: 1 #スキルポイントの回復量。
@@ -146,7 +182,7 @@ public class JobsCore implements Listener, CommandExecutor {
       2: #2~100まで対応
        attack: 1.0 #攻撃力。ここに書いた分だけ追加でダメージが入る
        defense: 1.0 #防御力。ここに書いた分だけダメージが減る
-       speed: 0.1 #速度。1が通常。10が最大で歩くスピードを変えられる。
+       speed: 0 #速度。書いた分だけスピードが増える。9が最大
        addhp: 2 #最大HP追加量。1でハート半分。
        sphealsec: 1 #スキルポイントの回復間隔。秒単位。
        sphealval: 1 #スキルポイントの回復量。
@@ -177,47 +213,61 @@ public class JobsCore implements Listener, CommandExecutor {
                 jobs.put(jobname,job);
             }
         }
+    }
 
+    public void reloadPlayerStats(){
         for(Player p : Bukkit.getOnlinePlayers()){
-            if(!playerstats.containsKey(p.getUniqueId())){
-                Job job = getUserJob(p);
-                int exp = getUserExp(p);
-                int level = getUserLevel(p);
-                PlayerStats stats = new PlayerStats();
-                stats.uuid = p.getUniqueId();
-                stats.exp = exp;
-                stats.jobname = job.getJobname();
-                stats.level = level;
-                stats.jobisoverflow = isUserJobOverflow(stats.jobname,p);
-                stats.joblevel = getUserJobLevel(stats.jobname,p);
-                playerstats.put(p.getUniqueId(),stats);
+            if(!isUserDataAlive(p)){
+                userDataSave(p,jobs.get("swordmaster"),1,0);
+                Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()->{
+                    reloadPlayerStats(p);
+                    if(!isUserJobDataAlive(getUserJob(p).getJobname(),p)){
+                        playerJobDataSave(p,getUserJob(p),1,false);
+                    }
+                },10);
+                continue;
             }
+
+            reloadPlayerStats(p);
+        }
+    }
+
+    public void reloadPlayerStats(Player p){
+        if(!playerstats.containsKey(p.getUniqueId())){
+            Job job = getUserJob(p);
+            if(job==null){
+                if(!isUserDataAlive(p)){
+                    userDataSave(p,jobs.get("swordmaster"),1,0);
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()->{
+                        if(!isUserJobDataAlive(getUserJob(p).getJobname(),p)){
+                            playerJobDataSave(p,getUserJob(p),1,false);
+                            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()-> Bukkit.getScheduler().runTask(plugin,()-> reloadPlayerStats(p)),10);
+                        }else{
+                            Bukkit.getScheduler().runTask(plugin,()-> reloadPlayerStats(p));
+                        }
+                    },10);
+                }else{
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()-> Bukkit.getScheduler().runTask(plugin,()-> reloadPlayerStats(p)),10);
+                }
+                return;
+            }
+            int exp = getUserExp(p);
+            int level = getUserLevel(p);
+            PlayerStats stats = new PlayerStats();
+            stats.uuid = p.getUniqueId();
+            stats.exp = exp;
+            stats.jobname = job.getJobname();
+            stats.level = level;
+            stats.jobisoverflow = isUserJobOverflow(stats.jobname,p);
+            stats.joblevel = getUserJobLevel(stats.jobname,p);
+            playerstats.put(p.getUniqueId(),stats);
+            playerStatsSync(p,job);
         }
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
-        if(!isUserDataAlive(e.getPlayer())){
-            userDataSave(e.getPlayer(),jobs.get("swordmaster"),1,0);
-            Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()->{
-                if(!isUserJobDataAlive(getUserJob(e.getPlayer()).getJobname(),e.getPlayer())){
-                    playerJobDataSave(e.getPlayer(),getUserJob(e.getPlayer()),1,false);
-                }
-            },10);
-        }else{
-            if(!isUserJobDataAlive(getUserJob(e.getPlayer()).getJobname(),e.getPlayer())){
-                playerJobDataSave(e.getPlayer(),getUserJob(e.getPlayer()),1,false);
-                return;
-            }
-            PlayerStats stats = new PlayerStats();
-            stats.uuid = e.getPlayer().getUniqueId();
-            stats.exp = getUserExp(e.getPlayer());
-            stats.jobname = getUserjobName(e.getPlayer());
-            stats.level = getUserLevel(e.getPlayer());
-            stats.jobisoverflow = isUserJobOverflow(stats.jobname,e.getPlayer());
-            stats.joblevel = getUserJobLevel(stats.jobname,e.getPlayer());
-            playerstats.put(e.getPlayer().getUniqueId(),stats);
-        }
+        reloadPlayerStats(e.getPlayer());
     }
 
     @EventHandler
@@ -286,7 +336,7 @@ public class JobsCore implements Listener, CommandExecutor {
     @EventHandler
     public void onAttack(EntityDamageByEntityEvent e){
         if (e.getEntity() instanceof Player){
-            Player p = (Player) e.getEntity();
+            Player p = (Player)e.getDamager();
             if(p==null||!p.isOnline()){
                 return;
             }
@@ -297,30 +347,17 @@ public class JobsCore implements Listener, CommandExecutor {
     }
 
     public void playerStatsSync(Player p,Job job){
+        if(!plugin.stats.playerStats.containsKey(p.getUniqueId())) {
+            plugin.stats.loadPlayerStats(p);
+        }
         int level = getUserJobLevel(job.getJobname(),p);
 
         if(job.getAddhp(level)!=0){
             p.setHealthScale(20+job.getAddhp(level));
         }
 
-        if(plugin.stats.getSPD(p)!=1.0){
-            p.setWalkSpeed(getFloatSpeed(false,(float)(plugin.stats.getSPD(p))));
-        }
-
-        if(job.getSphealsecond(level)!=0&&job.getSphealvalue(level)!=0){
-            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,()->{
-                plugin.stats.playerSPheal(p,job.getSphealvalue(level));
-            },0,job.getSphealsecond(level)*20);
-        }
-
-        if(job.getHphealsecond(level)!=0&&job.getHphealvalue(level)!=0){
-            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,()->{
-                if(p.getHealth()+job.getHphealvalue(level)>p.getHealthScale()){
-                    p.setHealth(p.getHealthScale());
-                }else{
-                    p.setHealth(p.getHealth()+job.getHphealvalue(level));
-                }
-            },0,job.getHphealsecond(level)*20);
+        if(plugin.stats.getSPD(p)!=0){
+            p.setWalkSpeed(getFloatSpeed(false,((float)(plugin.stats.getSPD(p)))+1.0f));
         }
     }
 
