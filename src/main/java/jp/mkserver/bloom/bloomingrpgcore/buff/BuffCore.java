@@ -1,12 +1,11 @@
 package jp.mkserver.bloom.bloomingrpgcore.buff;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
+import jp.mkserver.bloom.bloomingrpgcore.api.BossBarAPIPlus;
 import jp.mkserver.bloom.bloomingrpgcore.api.PlayerList;
 import jp.mkserver.bloom.bloomingrpgcore.api.VaultAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BuffCore implements CommandExecutor {
 
-    BloomingRPGCore plugin;
+    public BloomingRPGCore plugin;
     HashMap<UUID, CopyOnWriteArrayList<AbstractBuff>> playerbuffs = new HashMap<>();
 
     public BuffCore(BloomingRPGCore plugin){
@@ -99,7 +97,7 @@ public class BuffCore implements CommandExecutor {
                     }
 
                     if(!addBuff(target,args[1])){
-                        plugin.getLogger().info("§e"+target.getName()+"§cにカスタムバフを与えました");
+                        plugin.getLogger().info("§e"+target.getName()+"§cに"+BuffType.fromString(args[1]).name()+"を与えました");
                         target.sendMessage("§cカスタムバフが与えられました");
                     }else{
                         plugin.getLogger().info("§c存在しないバフ名です");
@@ -116,8 +114,8 @@ public class BuffCore implements CommandExecutor {
                     }
 
                     if(!removeBuff(target,args[1])){
-                        plugin.getLogger().info("§e"+target.getName()+"§cにカスタムバフを消しました");
-                        target.sendMessage("§cカスタムバフが消されました");
+                        plugin.getLogger().info("§e"+target.getName()+"§cの"+BuffType.fromString(args[1]).name()+"を消しました");
+                        target.sendMessage("§c"+BuffType.fromString(args[1]).name()+"が消されました");
                     }else{
                         plugin.getLogger().info("§c存在しないバフ名です");
                     }
@@ -162,7 +160,7 @@ public class BuffCore implements CommandExecutor {
 
             if(args[0].equalsIgnoreCase("give")){
                 if(addBuff(p,args[1])){
-                    p.sendMessage("§aカスタムバフを与えました");
+                    p.sendMessage("§a"+BuffType.fromString(args[1]).name()+"を与えました");
                 }else{
                     p.sendMessage("§c存在しないバフ名です");
                 }
@@ -171,7 +169,7 @@ public class BuffCore implements CommandExecutor {
             
             if(args[0].equalsIgnoreCase("take")) {
                 if(removeBuff(p,args[1])){
-                    p.sendMessage("§aカスタムバフを消しました");
+                    p.sendMessage("§c"+BuffType.fromString(args[1]).name()+"を消しました");
                 }else{
                     p.sendMessage("§c存在しないバフ名です");
                 }
@@ -189,8 +187,8 @@ public class BuffCore implements CommandExecutor {
                 }
                 
                 if(addBuff(target,args[1])){
-                    p.sendMessage("§e"+target.getName()+"§cにカスタムバフを与えました");
-                    target.sendMessage("§cカスタムバフが与えられました");
+                    p.sendMessage("§e"+target.getName()+"§cに"+BuffType.fromString(args[1]).name()+"を与えました");
+                    target.sendMessage("§a"+BuffType.fromString(args[1]).name()+"が与えられました");
                 }else{
                     p.sendMessage("§c存在しないバフ名です");
                 }
@@ -206,8 +204,8 @@ public class BuffCore implements CommandExecutor {
                 }
                 
                 if(removeBuff(target,args[1])){
-                    p.sendMessage("§e"+target.getName()+"§cにカスタムバフを消しました");
-                    target.sendMessage("§cカスタムバフが消されました");
+                    p.sendMessage("§e"+target.getName()+"§cの"+BuffType.fromString(args[1]).name()+"を消しました");
+                    target.sendMessage("§c"+BuffType.fromString(args[1]).name()+"が消されました");
                 }else{
                     p.sendMessage("§c存在しないバフ名です");
                 }
@@ -334,7 +332,7 @@ public class BuffCore implements CommandExecutor {
         }
     }
 
-    HashMap<UUID,BossBarAPIPlus> bossbars = new HashMap<>();
+    HashMap<UUID, BossBarAPIPlus> bossbars = new HashMap<>();
 
     private int gettitlecount = 0;
 

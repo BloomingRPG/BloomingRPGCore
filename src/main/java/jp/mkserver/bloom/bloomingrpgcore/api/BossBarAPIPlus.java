@@ -1,5 +1,6 @@
-package jp.mkserver.bloom.bloomingrpgcore.buff;
+package jp.mkserver.bloom.bloomingrpgcore.api;
 
+import jp.mkserver.bloom.bloomingrpgcore.buff.BuffCore;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;

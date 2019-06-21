@@ -4,7 +4,8 @@
 中心となるプラグインです。  
 
 ### Todo
-次回の大型アップデート: 未定
+次回の大型アップデート: v0.3.0 Achievement Update
+https://github.com/BloomingRPG/BloomingRPGCore/issues/12
 
 ### Version History
 v0.1.0: 作成。 readme.md作成&編集。  
