@@ -1,4 +1,4 @@
-package jp.mkserver.bloom.bloomingrpgcore.spawn;
+package jp.mkserver.bloom.bloomingrpgcore.extra;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import org.bukkit.Bukkit;
@@ -106,9 +106,9 @@ public class Spawn implements CommandExecutor , Listener {
         }
 
         if(p.hasPermission("brpg.setspawn")){
-            p.sendMessage("§e/spawn set : スポーン地点をセット");
+            p.sendMessage("§e/extra set : スポーン地点をセット");
         }
-        p.sendMessage("§a/spawn : 神様がスポーン地点に転送してくれます。5秒間動いてはいけません。クールダウン30秒");
+        p.sendMessage("§a/extra : 神様がスポーン地点に転送してくれます。5秒間動いてはいけません。クールダウン30秒");
         return true;
     }
 

@@ -12,7 +12,7 @@ import java.util.UUID;
 public class Blessing extends AbstractBuff {
 
     public Blessing(BuffCore core, UUID player) {
-        super(core, BuffCore.BuffType.BLESSING, player, "BLESSING", false,0,-1);
+        super(core, BuffCore.BuffType.BLESSING, player, "§6§l神の§f§l祝福","BLESSING", false,0,-1);
     }
 
     @EventHandler
@@ -31,7 +31,7 @@ public class Blessing extends AbstractBuff {
                 for(Player pp : Bukkit.getOnlinePlayers()){
                     pp.playSound(p.getLocation(), Sound.ITEM_TOTEM_USE,1.0f,0.8f);
                 }
-                getCore().removeBuff(p, BuffCore.BuffType.BLESSING);
+                unRegister();
             }
         }
     }

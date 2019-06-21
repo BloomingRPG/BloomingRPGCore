@@ -21,4 +21,5 @@ v0.2.1: Jobシステムの修正・更新
 v0.2.2: Jobシステム系列の大規模な修正・更新  
 v0.2.3: Stats・Skill・Job・レベルシステムの修正  
 v0.2.4: カスタムバフシステム追加  
-v0.2.5: CrackShotAPI追加&多数のバグ修正
+v0.2.5: CrackShotAPI追加&多数のバグ修正  
+v0.2.6: PlayerListAPI追加&バグ修正

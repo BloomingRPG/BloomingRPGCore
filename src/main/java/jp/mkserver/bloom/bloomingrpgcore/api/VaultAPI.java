@@ -1,5 +1,6 @@
-package jp.mkserver.bloom.bloomingrpgcore;
+package jp.mkserver.bloom.bloomingrpgcore.api;
 
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -16,12 +17,15 @@ import java.util.UUID;
 public class VaultAPI {
     public boolean showMessage = true;
     private final JavaPlugin plugin;
+
     public VaultAPI(JavaPlugin plugin) {
         this.plugin = plugin;
         setupEconomy();
+        setupChat();
     }
 
     public static Economy economy = null;
+    public static Chat chat = null;
 
     private boolean setupEconomy() {
         plugin.getLogger().info("setupEconomy");
@@ -37,6 +41,19 @@ public class VaultAPI {
         economy = rsp.getProvider();
         plugin.getLogger().info("Economy setup");
         return economy != null;
+    }
+
+    public boolean setupChat() {
+        try {
+            RegisteredServiceProvider<Chat> chatProvider = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
+            if (chatProvider != null && chatProvider.getProvider() != null) {
+                chat = chatProvider.getProvider();
+                return chat != null && chat.isEnabled();
+            }
+            return false;
+        } catch (Throwable e) {
+            return false;
+        }
     }
 
     public boolean canUseVault() {

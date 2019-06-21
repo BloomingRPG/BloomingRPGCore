@@ -1,31 +1,61 @@
 package jp.mkserver.bloom.bloomingrpgcore.buff;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
+import jp.mkserver.bloom.bloomingrpgcore.api.PlayerList;
+import jp.mkserver.bloom.bloomingrpgcore.api.VaultAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BuffCore implements CommandExecutor {
 
     BloomingRPGCore plugin;
-    HashMap<UUID, List<AbstractBuff>> playerbuffs = new HashMap<>();
+    HashMap<UUID, CopyOnWriteArrayList<AbstractBuff>> playerbuffs = new HashMap<>();
 
     public BuffCore(BloomingRPGCore plugin){
         this.plugin = plugin;
+        this.board = Bukkit.getScoreboardManager().getNewScoreboard();
         plugin.getCommand("cbuff").setExecutor(this);
         plugin.getCommand("custombuff").setExecutor(this);
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,()->{
+            gettitlecount++;
             for(Player p : Bukkit.getOnlinePlayers()){
-                playerBuffsec(p);
+                String prefix = VaultAPI.chat.getPlayerPrefix(p);
+                String suffix = VaultAPI.chat.getPlayerSuffix(p);
+                if(prefix==null&&suffix==null){
+                    return;
+                }
+                Team team = board.getTeam(p.getName());
+                if(team==null){
+                    board.registerNewTeam(p.getName());
+                    team = board.getTeam(p.getName());
+                }
+                if(prefix!=null) {
+                    team.setPrefix(ChatColor.translateAlternateColorCodes('&',prefix));
+                }
+                if(suffix!=null) {
+                    team.setSuffix(ChatColor.translateAlternateColorCodes('&',suffix));
+                }
+                if(!team.hasEntry(p.getName())){
+                    team.addEntry(p.getName());
+                }
+                p.setScoreboard(board);
+                plugin.buff.updatePlayerEffectViewer(p);
             }
-        },0,20);
+        },20,20);
     }
 
     @Override
@@ -194,7 +224,7 @@ public class BuffCore implements CommandExecutor {
     // バフリストに追加したいバフ名を追加する
     public enum BuffType {
 
-        BLESSING;
+        BLESSING,AVOIDANCE;
 
         public static BuffType fromString(String param) {
             String toUpper = param.toUpperCase();
@@ -206,7 +236,7 @@ public class BuffCore implements CommandExecutor {
         }
 
         public static List<String> getBuffTypeNames() {
-            List<String> list = new ArrayList<>();
+            CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>();
             for(BuffType type:BuffType.values()){
                 list.add(type.name());
             }
@@ -215,8 +245,10 @@ public class BuffCore implements CommandExecutor {
     }
 
     public AbstractBuff createBuff(Player p,BuffType type){
-        if(type==BuffType.BLESSING){
-            return new Blessing(this,p.getUniqueId()); //神の祝福
+        if(type==BuffType.BLESSING) {
+            return new Blessing(this, p.getUniqueId()); //神の祝福
+        }else if(type==BuffType.AVOIDANCE){
+            return new Avoidance(this, p.getUniqueId()); //回避の目
         }else{
             return null;
         }
@@ -227,20 +259,22 @@ public class BuffCore implements CommandExecutor {
     }
 
     public void clearBuff(Player p){
-        List<AbstractBuff> buffs = new ArrayList<>();
+        CopyOnWriteArrayList<AbstractBuff> buffs = new CopyOnWriteArrayList<>();
         playerbuffs.put(p.getUniqueId(),buffs);
+        updatePlayerEffectViewer(p);
     }
 
     private void addBuff(Player p,AbstractBuff buff){
         if(playerbuffs.containsKey(p.getUniqueId())){
-            List<AbstractBuff> buffs = playerbuffs.get(p.getUniqueId());
+            CopyOnWriteArrayList<AbstractBuff> buffs = playerbuffs.get(p.getUniqueId());
             buffs.add(buff);
             playerbuffs.put(p.getUniqueId(),buffs);
-            return;
+        }else {
+            CopyOnWriteArrayList<AbstractBuff> buffs = new CopyOnWriteArrayList<>();
+            buffs.add(buff);
+            playerbuffs.put(p.getUniqueId(), buffs);
         }
-        List<AbstractBuff> buffs = new ArrayList<>();
-        buffs.add(buff);
-        playerbuffs.put(p.getUniqueId(),buffs);
+        updatePlayerEffectViewer(p);
     }
 
     public boolean addBuff(Player p,String buffname){
@@ -263,30 +297,117 @@ public class BuffCore implements CommandExecutor {
         }
     }
 
-    void removeBuff(Player p,BuffType bufftype){
+    public void removeBuff(Player p,BuffType bufftype){
         if(playerbuffs.containsKey(p.getUniqueId())){
-            List<AbstractBuff> buffs = playerbuffs.get(p.getUniqueId());
+            CopyOnWriteArrayList<AbstractBuff> buffs = playerbuffs.get(p.getUniqueId());
             for(AbstractBuff buff:buffs){
                 if(buff.getBuffid().equalsIgnoreCase(bufftype.name())){
+                    buff.endTask();
                     buffs.remove(buff);
                 }
             }
             playerbuffs.put(p.getUniqueId(),buffs);
-            return;
+        }else {
+            CopyOnWriteArrayList<AbstractBuff> buffs = new CopyOnWriteArrayList<>();
+            playerbuffs.put(p.getUniqueId(), buffs);
         }
-        List<AbstractBuff> buffs = new ArrayList<>();
-        playerbuffs.put(p.getUniqueId(),buffs);
+        updatePlayerEffectViewer(p);
     }
 
-    public void playerBuffsec(Player p){
-        if(playerbuffs.containsKey(p.getUniqueId())){
-            List<AbstractBuff> buffs = playerbuffs.get(p.getUniqueId());
+    public void removeBuff(UUID uuid,BuffType bufftype){
+        if(playerbuffs.containsKey(uuid)){
+            CopyOnWriteArrayList<AbstractBuff> buffs = playerbuffs.get(uuid);
             for(AbstractBuff buff:buffs){
-                if(buff.isIscallRun()){
-                   buff.run();
+                if(buff.getBuffid().equalsIgnoreCase(bufftype.name())){
+                    buff.endTask();
+                    buffs.remove(buff);
+                }
+            }
+            playerbuffs.put(uuid,buffs);
+        }else {
+            CopyOnWriteArrayList<AbstractBuff> buffs = new CopyOnWriteArrayList<>();
+            playerbuffs.put(uuid, buffs);
+        }
+        Player p =Bukkit.getPlayer(uuid);
+        if(p!=null&&p.isOnline()){
+            updatePlayerEffectViewer(p);
+        }
+    }
+
+    HashMap<UUID,BossBarAPIPlus> bossbars = new HashMap<>();
+
+    private int gettitlecount = 0;
+
+    public String getRPGTitle(){
+        if(gettitlecount>=7){
+            gettitlecount = 0;
+        }
+        if(gettitlecount==0){
+            return "§6§lWelCome to §c§lBlooming§e§lRPG";
+        }else if(gettitlecount==1){
+            return "§e§lWel§6§lCome to §c§lBloomingRPG";
+        }else if(gettitlecount==2){
+            return "§6§lWel§e§lCome §6§lto §c§lBloomingRPG";
+        }else if(gettitlecount==3){
+            return "§6§lWelCome §e§lto §c§lBloomingRPG";
+        }else if(gettitlecount==4){
+            return "§6§lWelCome to §e§lBloom§c§lingRPG";
+        }else if(gettitlecount==5){
+            return "§6§lWelCome to §c§lBloom§e§ling§c§lRPG";
+        }else{
+            return "§6§lWelCome to §c§lBloomingRPG";
+        }
+    }
+
+    Scoreboard board;
+
+    public void updatePlayerEffectViewer(Player p){
+        PlayerList list = PlayerList.getPlayerList(p);
+        int i = 0;
+        for(Player pp : Bukkit.getOnlinePlayers()){
+            list.updateSlot(i,pp.getName(),true);
+            i++;
+        }
+        String result = "§e"+Bukkit.getOnlinePlayers().size()+"§d/§e"+Bukkit.getMaxPlayers();
+        if(playerbuffs.containsKey(p.getUniqueId())&&playerbuffs.get(p.getUniqueId()).size()!=0) {
+            CopyOnWriteArrayList<AbstractBuff> buffs = playerbuffs.get(p.getUniqueId());
+            for (AbstractBuff buff : buffs) {
+                if (!buff.getEffectTime().equalsIgnoreCase("0秒")) {
+                    result = result + "\n" +(buff.getViewname() + "§f:§e" + buff.getEffectTime());
+                } else {
+                    result = result + "\n" +(buff.getViewname());
                 }
             }
         }
+
+        list.setHeaderFooter(getRPGTitle(), result);
+
+        /* Old version
+        BossBarAPIPlus bar;
+        if(bossbars.containsKey(p.getUniqueId())){
+            bar = bossbars.get(p.getUniqueId());
+            bar.stopMovingTitle();
+        }else{
+            bar = new BossBarAPIPlus(this,"Creating now", BarColor.YELLOW, BarStyle.SOLID);
+        }
+
+        List<String> list = new ArrayList<>();
+        if(playerbuffs.containsKey(p.getUniqueId())&&playerbuffs.get(p.getUniqueId()).size()!=0) {
+            CopyOnWriteArrayList<AbstractBuff> buffs = playerbuffs.get(p.getUniqueId());
+            for (AbstractBuff buff : buffs) {
+                if(!buff.getEffectTime().equalsIgnoreCase("0秒")){
+                    list.add(buff.getViewname()+"§f:§e"+buff.getEffectTime());
+                }else{
+                    list.add(buff.getViewname());
+                }
+            }
+            bar.createMovingTitle(list,3);
+            bossbars.put(p.getUniqueId(),bar);
+            bar.showPlayer(p);
+        }else{
+            bar.unVisiblePlayer(p);
+            bossbars.remove(p.getUniqueId());
+        } */
     }
 
 

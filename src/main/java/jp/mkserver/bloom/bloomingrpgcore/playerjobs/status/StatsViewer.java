@@ -1,4 +1,4 @@
-package jp.mkserver.bloom.bloomingrpgcore.playerjobs;
+package jp.mkserver.bloom.bloomingrpgcore.playerjobs.status;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

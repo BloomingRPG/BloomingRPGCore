@@ -1,5 +1,6 @@
-package jp.mkserver.bloom.bloomingrpgcore;
+package jp.mkserver.bloom.bloomingrpgcore.extra;
 
+import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

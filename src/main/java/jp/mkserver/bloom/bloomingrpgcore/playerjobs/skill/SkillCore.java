@@ -1,8 +1,7 @@
 package jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill;
 
-import com.shampaggon.crackshot.CSUtility;
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
-import jp.mkserver.bloom.bloomingrpgcore.CrackShotAPI;
+import jp.mkserver.bloom.bloomingrpgcore.api.CrackShotAPI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

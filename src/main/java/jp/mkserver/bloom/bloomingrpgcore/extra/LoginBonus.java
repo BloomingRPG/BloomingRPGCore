@@ -1,5 +1,7 @@
-package jp.mkserver.bloom.bloomingrpgcore;
+package jp.mkserver.bloom.bloomingrpgcore.extra;
 
+import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
+import jp.mkserver.bloom.bloomingrpgcore.MySQLManagerV2;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
