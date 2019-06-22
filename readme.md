@@ -3,7 +3,7 @@
 このプロジェクトは制作中のMinecraftJEサーバー「BloomingRPG」の  
 中心となるプラグインです。  
 
-###Auto Build
+### Auto Build
 Jenkinsを使用した自動ビルドでpush後約一分でデバックサーバーに反映されます。  
 作るの大変だったのにむしろ1分かかるのか…って感じはするけど
 
