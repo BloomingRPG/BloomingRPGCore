@@ -1,5 +1,6 @@
 package jp.mkserver.bloom.bloomingrpgcore.buff;
 
+import jp.mkserver.bloom.bloomingrpgcore.buff.BuffCore;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;

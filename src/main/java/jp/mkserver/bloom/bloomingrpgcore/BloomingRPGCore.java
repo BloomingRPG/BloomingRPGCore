@@ -1,5 +1,6 @@
 package jp.mkserver.bloom.bloomingrpgcore;
 
+import jp.mkserver.bloom.bloomingrpgcore.achievement.AchievementCore;
 import jp.mkserver.bloom.bloomingrpgcore.api.CrackShotAPI;
 import jp.mkserver.bloom.bloomingrpgcore.api.VaultAPI;
 import jp.mkserver.bloom.bloomingrpgcore.buff.BuffCore;
@@ -47,6 +48,8 @@ public final class BloomingRPGCore extends JavaPlugin {
     public StatsCore stats;
     public BuffCore buff;
 
+    public AchievementCore quest;
+
     public FlagManager flag;
 
     public FileConfiguration config;
@@ -71,6 +74,8 @@ public final class BloomingRPGCore extends JavaPlugin {
         job = new JobsCore(this);
         skill = new SkillCore(this);
 
+        quest = new AchievementCore(this);
+
         CrackShotAPI.init();
     }
 
@@ -82,7 +87,7 @@ public final class BloomingRPGCore extends JavaPlugin {
 
 
     //簡単作成不可壊アイテム
-    public ItemStack createUnbitem(String name, String[] lore, Material item, int dura, boolean pikapika){
+    public static ItemStack createUnbitem(String name, String[] lore, Material item, int dura, boolean pikapika){
         ItemStack items = new ItemStack(item,1,(short)dura);
         ItemMeta meta = items.getItemMeta();
         meta.setLore(Arrays.asList(lore));
@@ -99,7 +104,7 @@ public final class BloomingRPGCore extends JavaPlugin {
     }
 
     //簡単作成アイテム
-    public ItemStack createItem(String name, String[] lore, Material item, int dura, boolean pikapika){
+    public static ItemStack createItem(String name, String[] lore, Material item, int dura, boolean pikapika){
         ItemStack items = new ItemStack(item,1,(short)dura);
         ItemMeta meta = items.getItemMeta();
         meta.setLore(Arrays.asList(lore));
@@ -113,7 +118,7 @@ public final class BloomingRPGCore extends JavaPlugin {
     }
 
     //簡単作成プレイヤーヘッド
-    public ItemStack createSkullitem(String name, String[] lore, UUID playeruuid, boolean pikapika){
+    public static ItemStack createSkullitem(String name, String[] lore, UUID playeruuid, boolean pikapika){
         ItemStack items = new ItemStack(Material.SKULL_ITEM,1,(short)3);
         SkullMeta meta = (SkullMeta) items.getItemMeta();
         meta.setLore(Arrays.asList(lore));

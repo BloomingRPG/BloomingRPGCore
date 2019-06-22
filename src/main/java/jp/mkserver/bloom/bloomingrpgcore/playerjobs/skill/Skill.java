@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SkillData implements Listener {
+public class Skill implements Listener {
 
     private String skillname;
     private String skill_ViewName;
@@ -34,8 +34,8 @@ public class SkillData implements Listener {
     private int cooldown;
 
 
-    public SkillData(JavaPlugin plugin, JobsCore core, String skillname, String skill_ViewName,int cooldown, int need_level,int usepoint,String private_sklil,
-                     String cs_name,String no_point_message,String private_message,String no_need_level_message,String cooltime_message){
+    public Skill(JavaPlugin plugin, JobsCore core, String skillname, String skill_ViewName, int cooldown, int need_level, int usepoint, String private_sklil,
+                 String cs_name, String no_point_message, String private_message, String no_need_level_message, String cooltime_message){
         plugin.getServer().getPluginManager().registerEvents(this,plugin);
         this.core = core;
         this.cooldown = cooldown;

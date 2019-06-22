@@ -94,6 +94,15 @@ public class MySQLManagerV2 {
                 "statspoint INT" +
                 ");");
 
+        // achievement
+        execute("CREATE TABLE if not exists achievement " +
+                "(uuid text, " +
+                "player text, " +
+                "achievement_id INT," +
+                "get_reward boolean"+
+                ");");
+
+
 
     }
 

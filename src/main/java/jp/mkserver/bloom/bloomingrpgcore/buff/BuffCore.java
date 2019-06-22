@@ -4,6 +4,8 @@ import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import jp.mkserver.bloom.bloomingrpgcore.api.BossBarAPIPlus;
 import jp.mkserver.bloom.bloomingrpgcore.api.PlayerList;
 import jp.mkserver.bloom.bloomingrpgcore.api.VaultAPI;
+import jp.mkserver.bloom.bloomingrpgcore.buff.data.Avoidance;
+import jp.mkserver.bloom.bloomingrpgcore.buff.data.Blessing;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

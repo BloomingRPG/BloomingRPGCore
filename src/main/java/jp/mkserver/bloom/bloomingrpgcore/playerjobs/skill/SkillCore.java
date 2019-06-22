@@ -29,7 +29,7 @@ public class SkillCore implements CommandExecutor {
     }
 
     BloomingRPGCore plugin;
-    public HashMap<String, SkillData> skills = new HashMap<>();
+    public HashMap<String, Skill> skills = new HashMap<>();
 
     public SkillCore(BloomingRPGCore plugin) {
         this.plugin = plugin;
@@ -75,10 +75,10 @@ public class SkillCore implements CommandExecutor {
 
             if (f.exists()) {
                 String skillname = s.replaceFirst(".yml","").split("_",2)[0];
-                SkillData skillData = new SkillData(plugin,plugin.job,skillname,data.getString("viewname"),data.getInt("cooltime"),data.getInt("needlevel"),data.getInt("usepoint")
+                Skill skill = new Skill(plugin,plugin.job,skillname,data.getString("viewname"),data.getInt("cooltime"),data.getInt("needlevel"),data.getInt("usepoint")
                 ,data.getString("needjob"),data.getString("cs_name"),data.getString("no_point_msg"),data.getString("no_needjob_msg"),
                         data.getString("no_needlevel_msg"),data.getString("cooltime_msg"));
-                skills.put(skillname,skillData);
+                skills.put(skillname, skill);
             }
         }
     }

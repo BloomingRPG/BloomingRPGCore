@@ -1,5 +1,7 @@
-package jp.mkserver.bloom.bloomingrpgcore.buff;
+package jp.mkserver.bloom.bloomingrpgcore.buff.data;
 
+import jp.mkserver.bloom.bloomingrpgcore.buff.BuffCore;
+import jp.mkserver.bloom.bloomingrpgcore.buff.AbstractBuff;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
