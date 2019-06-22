@@ -3,6 +3,10 @@
 このプロジェクトは制作中のMinecraftJEサーバー「BloomingRPG」の  
 中心となるプラグインです。  
 
+###Auto Build
+Jenkinsを使用した自動ビルドでpush後約一分でデバックサーバーに反映されます。  
+作るの大変だったのにむしろ1分かかるのか…って感じはするけど
+
 ### Todo
 次回の大型アップデート: v0.3.0 Achievement Update  
 https://github.com/BloomingRPG/BloomingRPGCore/issues/12
@@ -24,4 +28,4 @@ v0.2.3: Stats・Skill・Job・レベルシステムの修正
 v0.2.4: カスタムバフシステム追加  
 v0.2.5: CrackShotAPI追加&多数のバグ修正  
 v0.2.6: PlayerListAPI追加&バグ修正  
-v0.3.0: Achievement追加
+v0.3.0: Achievement追加?
