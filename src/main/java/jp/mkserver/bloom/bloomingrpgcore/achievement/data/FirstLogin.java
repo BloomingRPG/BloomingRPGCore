@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class FirstLogin extends AbstractAchieve {
+    //test
     public FirstLogin() {
         super(1,
                 BloomingRPGCore.createUnbitem("§a§l?め?のロ??ン",new String[]{"初めて○○○○する"}, Material.OBSIDIAN,0,false),
