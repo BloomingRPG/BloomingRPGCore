@@ -4,7 +4,7 @@ import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import jp.mkserver.bloom.bloomingrpgcore.achievement.AbstractAchieve;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-
+a
 public class FirstLogin extends AbstractAchieve {
     public FirstLogin() {
         super(1,
