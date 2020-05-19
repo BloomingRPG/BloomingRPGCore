@@ -4,6 +4,8 @@ mysql:
   user:
   pass:
   db:
+firstloginmsg: '§d初めてログインしてくれてありがとう❤'
+loginmsg: '§aログインしてくれてありがとう❤'
 firstloginbonus:
   - say <player>さんが初参加です❤
 loginbonus:

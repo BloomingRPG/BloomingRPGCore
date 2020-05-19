@@ -1,18 +1,17 @@
 package jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill;
 
-import com.shampaggon.crackshot.events.WeaponPrepareShootEvent;
+import jp.mkserver.bloom.bloomingrpgcore.api.CrackShotAPI;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.Job;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs.JobsCore;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Skill implements Listener {
+public class Skill{
 
     private String skillname;
     private String skill_ViewName;
@@ -32,11 +31,13 @@ public class Skill implements Listener {
     private JobsCore core;
 
     private int cooldown;
+    
+    private JavaPlugin plugin;
 
 
     public Skill(JavaPlugin plugin, JobsCore core, String skillname, String skill_ViewName, int cooldown, int need_level, int usepoint, String private_sklil,
                  String cs_name, String no_point_message, String private_message, String no_need_level_message, String cooltime_message){
-        plugin.getServer().getPluginManager().registerEvents(this,plugin);
+        this.plugin = plugin;
         this.core = core;
         this.cooldown = cooldown;
         this.skillname = skillname;
@@ -73,60 +74,63 @@ public class Skill implements Listener {
 
     List<UUID> cooltime = new ArrayList<>();
 
-    @EventHandler
-    public void onSkillUse(WeaponPrepareShootEvent e){
+    public void onSkillUse(Player p){
 
-        if(e.getWeaponTitle().equalsIgnoreCase(cs_name)){
+        Job job = core.plugin.job.getUserJob(p);
 
-            Job job = core.plugin.job.getUserJob(e.getPlayer());
+        if(cooltime.contains(p.getUniqueId())){
+            if(!getCooltime_message().equalsIgnoreCase("none")){
+                p.sendMessage(getCooltime_message().replace("<player>",p.getName()).replace("<skillname>",skill_ViewName).replace("<usepoint>",usepoint+"")
+                        .replace("<need_level>",need_level+"").replace("<need_job>",job.getJob_ViewName()).replace("<mp_name>",job.getJob_spName()));
+            }
+            return;
+        }
 
-            if(cooltime.contains(e.getPlayer().getUniqueId())){
-                e.setCancelled(true);
-                if(!getCooltime_message().equalsIgnoreCase("none")){
-                    e.getPlayer().sendMessage(getCooltime_message().replace("<player>",e.getPlayer().getName()).replace("<skillname>",skill_ViewName).replace("<usepoint>",usepoint+"")
-                            .replace("<need_level>",need_level+"").replace("<need_job>",job.getJob_ViewName()).replace("<mp_name>",job.getJob_spName()));
+        if(!private_sklil.equalsIgnoreCase("none")){
+            if(job==null||!job.getJobname().equalsIgnoreCase(private_sklil)){
+                String needjobname = "None";
+                String spname = "None";
+                Job needjob = core.plugin.job.getJob(private_sklil);
+                if(needjob!=null){
+                    needjobname = needjob.getJobname();
+                    spname = needjob.getJob_spName();
                 }
+                p.sendMessage(getPrivate_message().replace("<player>",p.getName()).replace("<skillname>",skill_ViewName).replace("<usepoint>",usepoint+"")
+                        .replace("<need_level>",need_level+"").replace("<need_job>",needjobname).replace("<mp_name>",spname));
                 return;
             }
+        }
 
-            if(!private_sklil.equalsIgnoreCase("none")){
-                if(job==null||!job.getJobname().equalsIgnoreCase(private_sklil)){
-                    String needjobname = "None";
-                    String spname = "None";
-                    Job needjob = core.plugin.job.getJob(private_sklil);
-                    if(needjob!=null){
-                        needjobname = needjob.getJobname();
-                        spname = needjob.getJob_spName();
-                    }
-                    e.setCancelled(true);
-                    e.getPlayer().sendMessage(getPrivate_message().replace("<player>",e.getPlayer().getName()).replace("<skillname>",skill_ViewName).replace("<usepoint>",usepoint+"")
-                            .replace("<need_level>",need_level+"").replace("<need_job>",needjobname).replace("<mp_name>",spname));
-                    return;
-                }
+        if(need_level!=-1){
+            if(core.plugin.job.getUserLevel(p)<need_level){
+                p.sendMessage(getNo_need_level_message().replace("<player>",p.getName()).replace("<skillname>",skill_ViewName).replace("<usepoint>",usepoint+"")
+                        .replace("<need_level>",need_level+"").replace("<need_job>",core.plugin.job.getJob(private_sklil).getJob_ViewName()).replace("<mp_name>",core.plugin.job.getJob(private_sklil).getJob_spName()));
+                return;
             }
+        }
 
-            if(need_level!=-1){
-                if(core.plugin.job.getUserLevel(e.getPlayer())<need_level){
-                    e.setCancelled(true);
-                    e.getPlayer().sendMessage(getNo_need_level_message().replace("<player>",e.getPlayer().getName()).replace("<skillname>",skill_ViewName).replace("<usepoint>",usepoint+"")
-                            .replace("<need_level>",need_level+"").replace("<need_job>",core.plugin.job.getJob(private_sklil).getJob_ViewName()).replace("<mp_name>",core.plugin.job.getJob(private_sklil).getJob_spName()));
-                    return;
-                }
-            }
+        if(!core.plugin.stats.playerSPuse(p,usepoint)){
+            p.sendMessage(getNo_point_message().replace("<player>",p.getName()).replace("<skillname>",skill_ViewName).replace("<usepoint>",usepoint+"")
+                    .replace("<need_level>",need_level+"").replace("<need_job>",job.getJob_ViewName()).replace("<mp_name>",job.getJob_spName()));
+        }
 
-            if(!core.plugin.stats.playerSPuse(e.getPlayer(),usepoint)){
-                e.setCancelled(true);
-                e.getPlayer().sendMessage(getNo_point_message().replace("<player>",e.getPlayer().getName()).replace("<skillname>",skill_ViewName).replace("<usepoint>",usepoint+"")
-                .replace("<need_level>",need_level+"").replace("<need_job>",job.getJob_ViewName()).replace("<mp_name>",job.getJob_spName()));
-            }
+        //ここからスキル効果
 
-            if(cooldown!=-1) {
-                cooltime.add(e.getPlayer().getUniqueId());
-                Bukkit.getScheduler().runTaskLaterAsynchronously(core.plugin, () -> {
-                    cooltime.remove(e.getPlayer().getUniqueId());
-                }, cooldown);
-            }
+        //CSの名前がnoneではない場合 銃を無から強制発射する
+        if(!getCs_name().equalsIgnoreCase("none")){
+            CrackShotAPI.fire(p,getCs_name(),false);
+        }
 
+        //
+
+
+        //ここまでスキル効果
+
+        if(cooldown>0) {
+            cooltime.add(p.getUniqueId());
+            Bukkit.getScheduler().runTaskLaterAsynchronously(core.plugin, () -> {
+                cooltime.remove(p.getUniqueId());
+            }, cooldown);
         }
     }
 

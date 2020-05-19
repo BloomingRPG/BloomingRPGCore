@@ -106,9 +106,9 @@ public class Spawn implements CommandExecutor , Listener {
         }
 
         if(p.hasPermission("brpg.setspawn")){
-            p.sendMessage("§e/extra set : スポーン地点をセット");
+            p.sendMessage("§e/spawn set : スポーン地点をセット");
         }
-        p.sendMessage("§a/extra : 神様がスポーン地点に転送してくれます。5秒間動いてはいけません。クールダウン30秒");
+        p.sendMessage("§a/spawn : 神様がスポーン地点に転送してくれます。5秒間動いてはいけません。クールダウン30秒");
         return true;
     }
 
@@ -117,14 +117,5 @@ public class Spawn implements CommandExecutor , Listener {
         Player p = e.getEntity();
         p.setBedSpawnLocation(plugin.spawn.getLocaton());
         p.spigot().respawn();
-        Random rnd = new Random();
-        int random = rnd.nextInt(3)+1;
-        if(random==1){
-            p.sendMessage("§e???: まだ死ぬべきではないぞ…");
-        }else if(random==2){
-            p.sendMessage("§e???: 死んだのか…薬草はいるかえ？(煽り)");
-        }else if(random==3){
-            p.sendMessage("§e???: おおゆうしゃよ しんでしまうとは なさけ…wなイwwｯﾋｯﾋww");
-        }
     }
 }

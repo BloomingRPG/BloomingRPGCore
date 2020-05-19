@@ -33,9 +33,8 @@ public class Avoidance extends AbstractBuff {
                 p.sendMessage("§b風のように避けてダメージを回避した！");
                 p.getWorld().spawnParticle(Particle.SWEEP_ATTACK, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
                 for(Player pp : Bukkit.getOnlinePlayers()){
-                    pp.playSound(p.getLocation(), Sound.ITEM_ELYTRA_FLYING,1.0f,0.8f);
+                    pp.playSound(p.getLocation(), Sound.ITEM_ELYTRA_FLYING,1.0f,2f);
                 }
-                unRegister();
             }
         }
     }

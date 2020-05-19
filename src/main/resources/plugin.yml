@@ -3,7 +3,7 @@ version: ${project.version}
 main: jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore
 authors: [Mr_IK]
 description: Minecraft JE server Blooming RPG Plugin.
-depend: [Citizens,CrackShot,Chairs]
+depend: [Citizens,CrackShot]
 commands:
   party:
     description: BloomParty

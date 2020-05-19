@@ -102,13 +102,7 @@ public class LoginBonus implements Listener {
 
     //ログインボーナスで実行されるメソッド
     private void giveLoginBonus(Player p){
-        p.sendMessage("§e本日もログインいただきありがとうございます❤");
-        ItemStack apple = plugin.createUnbitem("§cログインアップル",
-                        new String[]{"§eログインボーナスとしてもらえる美味しいリンゴ。",
-                                "§e裏に油性ペンで廃棄と書いてある。"},
-                        Material.APPLE,0,false);
-        apple.setAmount(8);
-        p.getInventory().addItem(apple);
+        p.sendMessage(plugin.config.getString("loginmsg"));
         for(String str:plugin.config.getStringList("loginbonus")){
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(),str.replace("<player>",p.getName()));
         }
@@ -116,18 +110,7 @@ public class LoginBonus implements Listener {
 
     //初回ログインボーナスで実行されるメソッド
     private void firstLoginBonus(Player p){
-        p.sendMessage("§d初めてログインいただきありがとうございます❤");
-        ItemStack apple = plugin.createUnbitem("§cログインアップル",
-                new String[]{"§d初ログインボーナスとしてもらえる美味しいリンゴ。",
-                        "§e裏に水性ペンで初心者用と書いてある。"},
-                Material.APPLE,0,false);
-        apple.setAmount(16);
-        p.getInventory().addItem(apple);
-        ItemStack sword = plugin.createItem("§7石の剣",
-                new String[]{"§eなぜか最初から持っている§8ザコい§e剣。",
-                        "§eこれを使うぐらいなら木の枝の方がマシだ。"},
-                Material.STONE_SWORD,0,false);
-        p.getInventory().addItem(sword);
+        p.sendMessage(plugin.config.getString("firstloginmsg"));
         for(String str:plugin.config.getStringList("firstloginbonus")){
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(),str.replace("<player>",p.getName()));
         }

@@ -2,7 +2,6 @@ package jp.mkserver.bloom.bloomingrpgcore.buff;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import jp.mkserver.bloom.bloomingrpgcore.api.BossBarAPIPlus;
-import jp.mkserver.bloom.bloomingrpgcore.api.PlayerList;
 import jp.mkserver.bloom.bloomingrpgcore.api.VaultAPI;
 import jp.mkserver.bloom.bloomingrpgcore.buff.data.Avoidance;
 import jp.mkserver.bloom.bloomingrpgcore.buff.data.Blessing;
@@ -53,7 +52,6 @@ public class BuffCore implements CommandExecutor {
                     team.addEntry(p.getName());
                 }
                 p.setScoreboard(board);
-                plugin.buff.updatePlayerEffectViewer(p);
             }
         },20,20);
     }
@@ -261,7 +259,6 @@ public class BuffCore implements CommandExecutor {
     public void clearBuff(Player p){
         CopyOnWriteArrayList<AbstractBuff> buffs = new CopyOnWriteArrayList<>();
         playerbuffs.put(p.getUniqueId(),buffs);
-        updatePlayerEffectViewer(p);
     }
 
     private void addBuff(Player p,AbstractBuff buff){
@@ -274,7 +271,6 @@ public class BuffCore implements CommandExecutor {
             buffs.add(buff);
             playerbuffs.put(p.getUniqueId(), buffs);
         }
-        updatePlayerEffectViewer(p);
     }
 
     public boolean addBuff(Player p,String buffname){
@@ -311,7 +307,6 @@ public class BuffCore implements CommandExecutor {
             CopyOnWriteArrayList<AbstractBuff> buffs = new CopyOnWriteArrayList<>();
             playerbuffs.put(p.getUniqueId(), buffs);
         }
-        updatePlayerEffectViewer(p);
     }
 
     public void removeBuff(UUID uuid,BuffType bufftype){
@@ -327,10 +322,6 @@ public class BuffCore implements CommandExecutor {
         }else {
             CopyOnWriteArrayList<AbstractBuff> buffs = new CopyOnWriteArrayList<>();
             playerbuffs.put(uuid, buffs);
-        }
-        Player p =Bukkit.getPlayer(uuid);
-        if(p!=null&&p.isOnline()){
-            updatePlayerEffectViewer(p);
         }
     }
 
@@ -360,55 +351,6 @@ public class BuffCore implements CommandExecutor {
     }
 
     Scoreboard board;
-
-    public void updatePlayerEffectViewer(Player p){
-        PlayerList list = PlayerList.getPlayerList(p);
-        int i = 0;
-        for(Player pp : Bukkit.getOnlinePlayers()){
-            list.updateSlot(i,pp.getName(),true);
-            i++;
-        }
-        String result = "§e"+Bukkit.getOnlinePlayers().size()+"§d/§e"+Bukkit.getMaxPlayers();
-        if(playerbuffs.containsKey(p.getUniqueId())&&playerbuffs.get(p.getUniqueId()).size()!=0) {
-            CopyOnWriteArrayList<AbstractBuff> buffs = playerbuffs.get(p.getUniqueId());
-            for (AbstractBuff buff : buffs) {
-                if (!buff.getEffectTime().equalsIgnoreCase("0秒")) {
-                    result = result + "\n" +(buff.getViewname() + "§f:§e" + buff.getEffectTime());
-                } else {
-                    result = result + "\n" +(buff.getViewname());
-                }
-            }
-        }
-
-        list.setHeaderFooter(getRPGTitle(), result);
-
-        /* Old version
-        BossBarAPIPlus bar;
-        if(bossbars.containsKey(p.getUniqueId())){
-            bar = bossbars.get(p.getUniqueId());
-            bar.stopMovingTitle();
-        }else{
-            bar = new BossBarAPIPlus(this,"Creating now", BarColor.YELLOW, BarStyle.SOLID);
-        }
-
-        List<String> list = new ArrayList<>();
-        if(playerbuffs.containsKey(p.getUniqueId())&&playerbuffs.get(p.getUniqueId()).size()!=0) {
-            CopyOnWriteArrayList<AbstractBuff> buffs = playerbuffs.get(p.getUniqueId());
-            for (AbstractBuff buff : buffs) {
-                if(!buff.getEffectTime().equalsIgnoreCase("0秒")){
-                    list.add(buff.getViewname()+"§f:§e"+buff.getEffectTime());
-                }else{
-                    list.add(buff.getViewname());
-                }
-            }
-            bar.createMovingTitle(list,3);
-            bossbars.put(p.getUniqueId(),bar);
-            bar.showPlayer(p);
-        }else{
-            bar.unVisiblePlayer(p);
-            bossbars.remove(p.getUniqueId());
-        } */
-    }
 
 
 }

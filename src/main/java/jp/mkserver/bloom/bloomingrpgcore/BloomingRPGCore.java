@@ -1,7 +1,5 @@
 package jp.mkserver.bloom.bloomingrpgcore;
 
-import jp.mkserver.bloom.bloomingrpgcore.achievement.AchievementCore;
-import jp.mkserver.bloom.bloomingrpgcore.api.CrackShotAPI;
 import jp.mkserver.bloom.bloomingrpgcore.api.VaultAPI;
 import jp.mkserver.bloom.bloomingrpgcore.buff.BuffCore;
 import jp.mkserver.bloom.bloomingrpgcore.flag.FlagManager;
@@ -48,8 +46,6 @@ public final class BloomingRPGCore extends JavaPlugin {
     public StatsCore stats;
     public BuffCore buff;
 
-    public AchievementCore quest;
-
     public FlagManager flag;
 
     public FileConfiguration config;
@@ -73,10 +69,6 @@ public final class BloomingRPGCore extends JavaPlugin {
         stats = new StatsCore(this);
         job = new JobsCore(this);
         skill = new SkillCore(this);
-
-        quest = new AchievementCore(this);
-
-        CrackShotAPI.init();
     }
 
     @Override

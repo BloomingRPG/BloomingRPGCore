@@ -9,7 +9,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -169,7 +172,7 @@ public class StatsCore implements Listener, CommandExecutor {
             p.sendMessage("§6§l"+p.getName()+"§e(Lv."+plugin.job.getUserLevel(p)+") §fの「"+job.getJob_ViewName()+" §eLv."+plugin.job.getUserJobLevel(job.getJobname(),p)+"§f」 §f§lステータス");
             p.sendMessage("§e次のレベルまで: "+need_exp+"EXP");
             p.sendMessage("§eステータスポイント: §b"+getStatsPoint(p)+"P");
-            BigDecimal bd = new BigDecimal(p.getHealth());
+            BigDecimal bd = BigDecimal.valueOf(p.getHealth());
             p.sendMessage("§aHP(最大値)"+"§f: §a"+bd.setScale(1, RoundingMode.HALF_UP)+"§e("+p.getHealthScale()+")");
             p.sendMessage("§e"+job.getJob_spName()+"(最大値)§f: §a"+getPlayerStats(p).getSp()+"§e("+getPlayerStats(p).getMaxsp()+")");
             p.sendMessage("§c攻撃力§f: §c"+getATK(p));
@@ -223,7 +226,7 @@ public class StatsCore implements Listener, CommandExecutor {
                 send.sendMessage("§6§l"+p.getName()+"§e(Lv."+plugin.job.getUserLevel(p)+") §fの「"+job.getJob_ViewName()+" §eLv."+plugin.job.getUserJobLevel(job.getJobname(),p)+"§f」 §f§lステータス");
                 send.sendMessage("§e次のレベルまで: "+need_exp+"EXP");
                 send.sendMessage("§eステータスポイント: §b"+getStatsPoint(p)+"P");
-                BigDecimal bd = new BigDecimal(p.getHealth());
+                BigDecimal bd = BigDecimal.valueOf(p.getHealth());
                 send.sendMessage("§aHP(最大値)"+"§f: §a"+bd.setScale(1, RoundingMode.HALF_UP)+"§e("+p.getHealthScale()+")");
                 send.sendMessage("§e"+job.getJob_spName()+"(最大値)§f: §a"+getPlayerStats(p).getSp()+"§e("+getPlayerStats(p).getMaxsp()+")");
                 send.sendMessage("§c攻撃力§f: §c"+getATK(p));
@@ -250,11 +253,10 @@ public class StatsCore implements Listener, CommandExecutor {
                     }catch (NumberFormatException e){
                         p.sendMessage("§cポイント指定は数字で入力して下さい。");
                     }
-                    return true;
                 }else{
                     p.sendMessage("§cステータスタイプは ATK/DEF/SPD/SP のいずれかを選択してください。");
-                    return true;
                 }
+                return true;
             }
         }
 
@@ -351,6 +353,39 @@ public class StatsCore implements Listener, CommandExecutor {
             savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp()+(i/5),stats.getStatspoint()-i);
             String spname = plugin.job.getUserJob(p).getJob_spName();
             p.sendMessage("§e"+spname+"§aを§e"+i+"P分§a強化しました。(+"+(i/5)+")");
+        }
+    }
+
+    // プレイヤー被ダメージ時防御力計算
+    @EventHandler
+    public void onDamage(EntityDamageEvent e){
+        if (e.getEntity() instanceof Player){
+            Player p = (Player) e.getEntity();
+            if(p==null||!p.isOnline()){
+                return;
+            }
+            double damage = e.getDamage();
+            double defense = getDEF(p);
+            Bukkit.getLogger().info("DEBUG[defense event]: player:"+p.getName()+" damage:"+damage+" defense:"+defense);
+            if(damage <= defense){
+                e.setCancelled(true);
+            }else{
+                e.setDamage(damage-defense);
+            }
+        }
+    }
+
+    // プレイヤー攻撃時攻撃力加算の計算
+    @EventHandler
+    public void onAttack(EntityDamageByEntityEvent e){
+        if (e.getEntity() instanceof Player){
+            Player p = (Player)e.getDamager();
+            if(p==null||!p.isOnline()){
+                return;
+            }
+            double damage = e.getDamage();
+            double attack = getATK(p);
+            e.setDamage(damage+attack);
         }
     }
 

@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.permissions.PermissionAttachment;
@@ -29,13 +30,7 @@ import static org.bukkit.Bukkit.getServer;
 public class CrackShotAPI {
 
     static CSDirector director;
-
-
-    /**
-     * initメソッド
-     * 初期化の際に一回だけ実行すること
-     */
-    public static void init(){
+    static{
         director = JavaPlugin.getPlugin(CSDirector.class);
     }
 
