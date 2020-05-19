@@ -366,7 +366,6 @@ public class StatsCore implements Listener, CommandExecutor {
             }
             double damage = e.getDamage();
             double defense = getDEF(p);
-            Bukkit.getLogger().info("DEBUG[defense event]: player:"+p.getName()+" damage:"+damage+" defense:"+defense);
             if(damage <= defense){
                 e.setCancelled(true);
             }else{

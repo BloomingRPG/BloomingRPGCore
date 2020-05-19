@@ -2,7 +2,6 @@ package jp.mkserver.bloom.bloomingrpgcore.playerjobs.jobs;
 
 import jp.mkserver.bloom.bloomingrpgcore.BloomingRPGCore;
 import jp.mkserver.bloom.bloomingrpgcore.MySQLManagerV2;
-import jp.mkserver.bloom.bloomingrpgcore.playerjobs.skill.Skill;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.status.StatsViewer;
 import jp.mkserver.bloom.bloomingrpgcore.playerjobs.status.Stats;
 import org.bukkit.Bukkit;
@@ -39,7 +38,6 @@ public class JobsCore implements Listener, CommandExecutor {
         int level;
         int exp;
         String jobname;
-        String skillname;
         int joblevel;
         boolean jobisoverflow;
     }
@@ -159,7 +157,7 @@ public class JobsCore implements Listener, CommandExecutor {
                 pp.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1.0f,1.5f);
             }
             p.getWorld().spawnParticle(Particle.TOTEM, p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), 50, 0, 0, 0);
-            userDataSave(p,job,getUserSkill(p),level,exp);
+            userDataSave(p,job,level,exp);
             Stats stats = plugin.stats.getPlayerStats(p);
             plugin.stats.savePlayerStats(p,stats.getAttack(),stats.getDefense(), stats.getSpeed(), stats.getStats_sp(),stats.getStatspoint()+(level-oldlevel));
         }
@@ -232,7 +230,7 @@ public class JobsCore implements Listener, CommandExecutor {
     public void reloadPlayerStats(){
         for(Player p : Bukkit.getOnlinePlayers()){
             if(!isUserDataAlive(p)){
-                userDataSave(p,jobs.get("swordmaster"), plugin.skill.getSkill("heal"),1,0);
+                userDataSave(p,jobs.get("swordmaster"),1,0);
                 Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()->{
                     reloadPlayerStats(p);
                     if(!isUserJobDataAlive(getUserJob(p).getJobname(),p)){
@@ -251,7 +249,7 @@ public class JobsCore implements Listener, CommandExecutor {
             Job job = getUserJob(p);
             if(job==null){
                 if(!isUserDataAlive(p)){
-                    userDataSave(p,jobs.get("swordmaster"),plugin.skill.getSkill("heal"),1,0);
+                    userDataSave(p,jobs.get("swordmaster"),1,0);
                     Bukkit.getScheduler().runTaskLaterAsynchronously(plugin,()->{
                         if(!isUserJobDataAlive(getUserJob(p).getJobname(),p)){
                             playerJobDataSave(p,getUserJob(p),1,false);
@@ -355,7 +353,7 @@ public class JobsCore implements Listener, CommandExecutor {
     }
 
 
-    public void userDataSave(Player p, Job job, Skill skill, int level, int exp){
+    public void userDataSave(Player p, Job job, int level, int exp){
         Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
             int levels = level;
             if(level>100){
@@ -371,12 +369,11 @@ public class JobsCore implements Listener, CommandExecutor {
                 exps = 0;
             }
             if(!isUserDataAlive(p)){
-                plugin.mysql.execute("INSERT INTO jobs (player,uuid,job,skill,level,exp)  VALUES ('"+p.getName()+"','"+p.getUniqueId().toString()+"','"+job.getJobname()+"','"+skill+"',"+levels+","+exps+");");
+                plugin.mysql.execute("INSERT INTO jobs (player,uuid,job,level,exp)  VALUES ('"+p.getName()+"','"+p.getUniqueId().toString()+"','"+job.getJobname()+"',"+levels+","+exps+");");
                 PlayerStats stats = new PlayerStats();
                 stats.uuid = p.getUniqueId();
                 stats.exp = exps;
                 stats.jobname = job.getJobname();
-                stats.skillname = skill.getSkillname();
                 stats.level = levels;
                 stats.jobisoverflow = isUserJobOverflow(stats.jobname,p);
                 stats.joblevel = getUserJobLevel(stats.jobname,p);
@@ -391,7 +388,6 @@ public class JobsCore implements Listener, CommandExecutor {
             stats.uuid = p.getUniqueId();
             stats.exp = exps;
             stats.jobname = job.getJobname();
-            stats.skillname = skill.getSkillname();
             stats.level = levels;
             stats.jobisoverflow = isUserJobOverflow(stats.jobname,p);
             stats.joblevel = getUserJobLevel(stats.jobname,p);
@@ -446,7 +442,7 @@ public class JobsCore implements Listener, CommandExecutor {
         for(Player pp : Bukkit.getOnlinePlayers()){
             pp.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1.0f,1.5f);
         }
-        plugin.job.userDataSave(p,getUserJob(p),getUserSkill(p),getUserLevel(p),getUserExp(p)+exp);
+        plugin.job.userDataSave(p,getUserJob(p),getUserLevel(p),getUserExp(p)+exp);
     }
 
     public boolean isUserJobDataAlive(String jobname,Player p){
@@ -625,43 +621,6 @@ public class JobsCore implements Listener, CommandExecutor {
     public Job getJob(String name){
         return jobs.get(name);
     }
-
-    public String getUserSkillName(Player p){
-        if(playerstats.containsKey(p.getUniqueId())){
-            return playerstats.get(p.getUniqueId()).skillname;
-        }
-
-        MySQLManagerV2.Query query = plugin.mysql.query("SELECT * FROM jobs WHERE uuid = '"+p.getUniqueId().toString()+"';");
-        ResultSet rs = query.getRs();
-        if(rs==null){
-            query.close();
-            return null;
-        }
-        try {
-            if(rs.next()){
-                String name = rs.getString("skill");
-                query.close();
-                return name;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        query.close();
-        return null;
-    }
-
-    public Skill getUserSkill(Player p){
-        String name = getUserSkillName(p);
-        if(name!=null){
-            return plugin.skill.getSkill(name);
-        }
-        return null;
-    }
-
-    public void updateUserSkill(Player p, String skill){
-        plugin.job.userDataSave(p,getUserJob(p),plugin.skill.getSkill(skill),getUserLevel(p),getUserExp(p));
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -713,7 +672,7 @@ public class JobsCore implements Listener, CommandExecutor {
                     playerJobDataSave(p,job,1,false);
                 }
                 Bukkit.getScheduler().runTaskAsynchronously(plugin,()->{
-                    userDataSave(p,job,getUserSkill(p),level,exp);
+                    userDataSave(p,job,level,exp);
                     plugin.stats.getPlayerStats(p).setMaxsp(job.getJob_skillpoint(getUserJobLevel(job.getJobname(),p)));
                     p.sendMessage("§aあなたは"+job.getJob_ViewName()+"§aに転職しました");
                 });
